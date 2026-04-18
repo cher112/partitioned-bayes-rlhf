@@ -108,13 +108,39 @@ observed data; no formal isomorphism is claimed.*
   cross-judge R̂* range 3× on HS2 but collapses to `1 − accuracy` on UF
   (Spearman = −0.986). This is the limitation that motivates margin-matching
   `R̂*_CA` (Fig. 11).
-- **C9** Per-subsample isotonic refit on HS2 gives log-log slope −0.750 (R² =
-  0.968). This is empirical, not a formal rate — an earlier fixed-calibrator
-  version trivially verified the CLT (−0.500) and has been corrected (Fig. 12).
+- **C9** Per-subsample isotonic-refit sample complexity is **steeper than CLT**
+  on both synthetic and real data — slope −0.750 on HS2 (R² = 0.968) and
+  −0.626 on the 2-Gaussian toy with analytic `R* = 0.159`. The *effect*
+  (calibrator-refit adds variance structure beyond i.i.d. sampling) is
+  reproducible; the specific slope is data-dependent. An earlier
+  fixed-calibrator version trivially verified CLT (−0.500) and has been
+  corrected (Fig. 12, Fig. 14).
 - **C10** HS2 ↔ UF 6-judge ranking consistency: Spearman 0.77 (N=6). The
   two datasets differ in both covariate and concept shift (human-majority
   vs. GPT-4 score-gap gold), so this is a ranking-stability check, not a
   clean OOD-transfer test (Fig. 13).
+- **C11** Null-permutation control: shuffling HS2 gold gives
+  `R̂*_iso ≈ 0.49` = class prior `min(p, 1−p)`, and plug-in `R̂*` is gold-
+  invariant. 4/6 judges (Llama-3 / Granite / Mistral / Qwen) real
+  `R̂*_iso` lies **outside** the null 95% CI — genuine signal; OLMo and
+  Falcon sit **inside** the null CI — their high `R̂*` is statistically
+  indistinguishable from random labels, directly dramatising the capacity
+  confound (Fig. 15).
+- **C12** The confound is **invariant to gold-filter strictness**. Scanning
+  UF score-gap thresholds `τ ∈ {2, 3, 4, 5}` (n shrinks 999 → 307),
+  `r(acc, R̂*_iso)` stays in `[−0.999, −1.000]` with Fisher-z CI upper
+  bound ≤ −0.988. The effect is not an artifact of the `τ = 2` default
+  cut (Fig. 16).
+- **C13** **Naive crowd-consensus aggregation cannot replace `R̂*_CA`.**
+  Median-of-per-judge-isotonic-output yields a single-number consensus
+  `R̂*` per dataset (HS2: 0.445, UF: 0.299; drift 0.146). Because median
+  cannot remove the *systematic* capacity bias (weak judges' `c_k`
+  collapses to 0.5), the consensus reproduces the median-capacity
+  judge's estimate rather than a data-side invariant
+  ([Dawid–Skene 1979](https://www.jstor.org/stable/2346806),
+  [Raykar et al. 2010](https://www.jmlr.org/papers/v11/raykar10a.html)
+  lineage). This establishes the **minimum-viable-aggregator baseline
+  Year-1 margin-matching must beat** (Fig. 17).
 
 ## Year-1 / Year-2 Research Plan
 
@@ -166,6 +192,10 @@ observed data; no formal isomorphism is claimed.*
 | C8 | Monotone calibration is a dataset-dependent fix — motivates `R̂*_CA` | [Fig. 11](experiments/P8-baselines/fig_baselines.png) + [stats.json](experiments/P8-baselines/stats.json) | HS2: iso range 0.084 (3× below plug-in 0.258); UF: iso range 0.337 ≈ 1−acc range 0.367, Spearman(iso, acc) = **−0.986** (iso degenerates on UF) |
 | C9 | Joint (isotonic-refit + plug-in) HS2 sample complexity has empirical slope −0.750 | [Fig. 12](experiments/P9-hs2-sample-complexity/fig_sample_complexity.png) + [stats.json](experiments/P9-hs2-sample-complexity/stats.json) | Subsampling (without replacement) at N ∈ {100…800}, 100 seeds × 6 judges. Log-log slope = **−0.750** (R² = 0.968), steeper than CLT reference −0.500 — the calibrator fit couples bias-variance in a non-trivial way |
 | C10 | Judge ranking is stable across HS2 and UF | [Fig. 13](experiments/P10-cross-dataset-rank/fig_cross_dataset_rank.png) + [stats.json](experiments/P10-cross-dataset-rank/stats.json) | Spearman ρ = +0.77 (p = 0.07); Pearson r = +0.89, Fisher-z CI [0.30, 0.99]; gold defs differ (HS2 human-majority vs UF GPT-4 score-gap) so this is ranking consistency, not OOD-transfer |
+| C9 (synth) | Refit-iso slope also steeper than CLT on synthetic toy | [Fig. 14](experiments/P0-synthetic-confounding/fig_synthetic_sample_complexity.png) + [results_v5_sample_complexity.json](experiments/P0-synthetic-confounding/results_v5_sample_complexity.json) | Synthetic slope −0.626 (HS2 −0.750); `\|syn − hs2\| = 0.124 < 0.15` threshold; R² = 0.951; confirms calibrator-refit couples bias-variance beyond CLT regardless of data source |
+| C11 | Weak judges (Falcon, OLMo) produce no signal beyond random labels | [Fig. 15](experiments/P11-null-sanity/fig_null_sanity.png) + [stats.json](experiments/P11-null-sanity/stats.json) | 200 gold-permutations: null `R̂*_iso` ≈ class prior 0.49; 4/6 judges real `R̂*_iso` outside null 95% CI, Falcon 0.47 and OLMo 0.46 inside |
+| C12 | Confound invariant to UF gold-filter strictness | [Fig. 16](experiments/P12-uf-consensus-subset/fig_uf_consensus.png) + [stats.json](experiments/P12-uf-consensus-subset/stats.json) | τ ∈ {2,3,4,5}, n 999 → 307: `r(acc, R̂*_iso) ∈ [−0.999, −1.000]`, Fisher-z CI upper bound ≤ −0.988 |
+| C13 | Year-1 baseline-to-beat: naive crowd-consensus fails | [Fig. 17](experiments/P13-consensus-baseline/fig_consensus.png) + [stats.json](experiments/P13-consensus-baseline/stats.json) | HS2 median-of-c = 0.445, UF = 0.299; drift 0.146 = same order as single-judge spread; median cannot remove systematic capacity bias — establishes the aggregator floor |
 
 ---
 
