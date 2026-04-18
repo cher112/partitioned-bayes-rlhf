@@ -1,0 +1,88 @@
+{
+  "n_pairs_total": 9125,
+  "n_bootstrap_resamples": 1000,
+  "bootstrap_seed": 42,
+  "confidence_level": 0.95,
+  "partitions": [
+    {
+      "strength_bin": 0,
+      "n_pairs": 2007,
+      "agree_rate": {
+        "mean": 0.6714260899774188,
+        "ci_lo": 0.6652755341323605,
+        "ci_hi": 0.6776363557408371
+      },
+      "per_annotator_error_rate": {
+        "mean": 0.33123145400593473,
+        "ci_lo": 0.3180637982195846,
+        "ci_hi": 0.3440281899109792,
+        "n_annotations": 5392
+      },
+      "strength_variance": {
+        "mean": 0.03801198540906724,
+        "ci_lo": 0.031335363470557584,
+        "ci_hi": 0.045447954663887444
+      }
+    },
+    {
+      "strength_bin": 1,
+      "n_pairs": 3033,
+      "agree_rate": {
+        "mean": 0.901681537405628,
+        "ci_lo": 0.8957142244337681,
+        "ci_hi": 0.9073501487073895
+      },
+      "per_annotator_error_rate": {
+        "mean": 0.12062674393646705,
+        "ci_lo": 0.11364831508907491,
+        "ci_hi": 0.1272832152822494,
+        "n_annotations": 9318
+      },
+      "strength_variance": {
+        "mean": 0.17195111721192713,
+        "ci_lo": 0.16442364685807978,
+        "ci_hi": 0.18013258550674904
+      }
+    },
+    {
+      "strength_bin": 2,
+      "n_pairs": 2562,
+      "agree_rate": {
+        "mean": 0.876276749376395,
+        "ci_lo": 0.869704772220034,
+        "ci_hi": 0.8829668832873835
+      },
+      "per_annotator_error_rate": {
+        "mean": 0.1539080459770115,
+        "ci_lo": 0.1464367816091954,
+        "ci_hi": 0.1611522988505747,
+        "n_annotations": 8700
+      },
+      "strength_variance": {
+        "mean": 0.4004736116581331,
+        "ci_lo": 0.3888295069143582,
+        "ci_hi": 0.4122062683252375
+      }
+    },
+    {
+      "strength_bin": 3,
+      "n_pairs": 1523,
+      "agree_rate": {
+        "mean": 0.9172697368421052,
+        "ci_lo": 0.9101809210526316,
+        "ci_hi": 0.924079221491228
+      },
+      "per_annotator_error_rate": {
+        "mean": 0.099335232668566,
+        "ci_lo": 0.09116809116809117,
+        "ci_hi": 0.10731718898385566,
+        "n_annotations": 5265
+      },
+      "strength_variance": {
+        "mean": 0.2170908260233918,
+        "ci_lo": 0.20430978161549707,
+        "ci_hi": 0.23020669773391814
+      }
+    }
+  ]
+}
