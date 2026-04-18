@@ -8,30 +8,75 @@
 
 ## The Idea
 
-Evaluating RLHF preference data is a diagnosis problem: how much of the
-disagreement we see is *irreducible annotator noise* versus *reducible
-classifier error*? **Ishida et al.** (ICLR 2023 oral) gave an instance-free
-Bayes error estimator `R̂* = (1/N) Σ min(c_i, 1−c_i)` from soft labels —
-exactly the kind of diagnostic we need. But in RLHF the soft labels come from
-**LLM judges**, which are systematically miscalibrated
-([Guo 2017](https://arxiv.org/abs/1706.04599)); naively plugging them in yields
-estimates dominated by judge **capacity**, not data-side noise. The
-calibration fix [Ushio et al. ICLR 2026] proposes — isotonic on corrupted
-soft labels — preserves the confound in the multi-judge regime (C8). The
-preference half of the problem is Bradley–Terry (1952) / Plackett-Luce;
-modern DPO ([Rafailov 2023](https://arxiv.org/abs/2305.18290)) inherits its
-noise assumptions. Yin & Ishida (ICLR 2026)'s partitioned scalable-oversight
-framework gives the natural language for "expert-domain partitions" as an
-intermediate between per-instance and population-level diagnostics.
-(Author background: M.S. thesis on irregular-time-series classification
-under class imbalance via Neural LNSDE + continuous-time Transformer on
-MACHO / LINEAR / ASAS / PhysioNet. The transferable angle is experience
-with *noise-robust diagnostics on imbalanced, irregularly-observed data* —
-which the tie-heavy, annotator-partitioned RLHF setting demands. We do
-**not** claim a formal isomorphism.) This repo is the preliminary evidence that
-the confound is real, the partitioned structure is recoverable, and a
-**calibration-aware preference Bayes-error estimator `R̂*_CA`** is a feasible
-Year-1 theoretical target.
+### What we do
+
+We diagnose **how much of the disagreement in RLHF preference data is
+irreducible annotator noise vs. reducible judge error**, by extending
+[Ishida et al. ICLR 2023 oral](https://arxiv.org/abs/2304.01247)'s
+instance-free Bayes error estimator
+`R̂* = (1/N) Σ min(c_i, 1−c_i)` from soft labels to the Bradley–Terry
+preference setting ([BT 1952] / Plackett–Luce /
+[DPO; Rafailov 2023](https://arxiv.org/abs/2305.18290)), and stress-testing
+it on **6 open-source 7B/8B LLM judges × 2 preference datasets** (HelpSteer2,
+UltraFeedback). Independently, we measure **human-annotator-only**
+heterogeneity on HelpSteer2-Preference (9125 pairs × 3 annotators)
+classifier-free, and we build a synthetic **calibration-aware estimator
+`R̂*_CA`** (margin-matching in the monotone-coupled regime) verified on a
+2-Gaussian toy with known analytic `R*`.
+
+### What we found (numbers all in this repo, see C1–C10)
+
+1. **The plug-in estimator is confounded by judge *capacity*, not by
+   data-side noise, in both datasets we tested.** Cross-judge
+   `r(acc, R̂*_iso)` is `−0.97` on HS2 (Fisher-z 95% CI [−0.996, −0.719]) and
+   `−0.999` on UF (CI [−0.9999, −0.993]). A weaker judge gives a
+   systematically higher `R̂*` on the same data — the estimator is reading
+   the classifier, not the labels.
+2. **Monotone calibration cannot remove the confound in the multi-judge
+   regime.** Platt / Temperature / Isotonic / Beta
+   ([Kull 2017](https://arxiv.org/abs/1707.01535)) reduce per-judge ECE
+   10–20× yet *preserve* cross-judge `r(acc, R̂*) ≤ −0.94`. Worse, isotonic
+   **degenerates into `1 − accuracy`** on UF (Spearman = −0.986) — the
+   dataset-dependent failure mode our corrected estimator must avoid.
+3. **The partition-conditional signal is real and classifier-free.**
+   Per-annotator error rate on HS2-Preference spans **3.3×** across
+   `|preference-strength|` bins (0 → 3) with disjoint 95% CIs, computed
+   without any LLM. This validates the "partitioned R*|A_k" premise
+   independently of the judge-confound story.
+4. **The fix is feasible *on synthetic data with known `R*`*.** On a
+   2-Gaussian toy with analytic `R* = Φ(−1) ≈ 0.1587`, `R̂*_CA` stays
+   within 0.001 across a 23× plug-in swing (softmax T ∈ {0.1,…,5.0}).
+   **We do not yet claim the fix works on real LLM-judge data** — that
+   is Year-1.
+5. **The *problem* — but not yet the fix — carries over to real
+   LLMs.** On Llama-3-8B + HS2, scanning conditional `P(A∨B, T)` gives
+   a **21× plug-in span** with flat accuracy (0.586) — i.e. the
+   capacity confound is not a synthetic artifact. (Cross-verification,
+   not a fix.)
+6. **Synthetic Bradley–Terry sample-complexity matches theory.** Known-reward
+   BT simulations give empirical log-log slope `−0.511` for `|R̂*_pref − R*|`
+   vs. `N` (theoretical `−0.5`; plug-in rates
+   [Nguyen 2005](https://papers.nips.cc/paper/2005/hash/f8c59ccbf5d05b8d4b6e0d5f3b8c8f95-Abstract.html),
+   [Niu et al. 2013]).
+
+### Why it matters for RLHF
+
+Pipelines (DPO, PPO) treat preference pairs as if their noise were
+homogeneous. Our findings say **the noise is heterogeneous across
+partitions, any measurement of it via LLM judges is capacity-confounded,
+and the standard fixes (monotone calibration) are insufficient.** Year-1
+of the proposal is the formal theorem that turns `R̂*_CA` from a synthetic
+proof-of-concept into a provable finite-sample bias bound under BT.
+Year-2 turns that bound into RLHF ingredients: partition-weighted DPO
+([Lodkaew et al. 2025]), complementary-preference learning
+([Ishida 2017](https://arxiv.org/abs/1711.10151) lineage × Yin & Ishida
+2026 scalable oversight), and cross-lingual / online drift detection.
+
+*Author background: M.S. thesis on noise-robust irregular-time-series
+classification under class imbalance (Neural LNSDE + continuous-time
+Transformer on MACHO / LINEAR / ASAS / PhysioNet). The transferable
+angle is experience with noise diagnostics on imbalanced, irregularly-
+observed data; no formal isomorphism is claimed.*
 
 ## Contributions (preliminary)
 
