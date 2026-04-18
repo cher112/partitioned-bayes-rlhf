@@ -1,0 +1,60 @@
+{
+  "hs2": {
+    "dataset": "HS2",
+    "judges": [
+      "falcon-7b-instruct",
+      "granite-3.0-8b-instruct",
+      "Llama-3-8B-Instruct",
+      "Mistral-7B-Instruct-v0.3",
+      "OLMo-7B-Instruct-hf",
+      "Qwen2.5-7B-Instruct"
+    ],
+    "per_judge_rstar_iso": [
+      0.4714714714714714,
+      0.4004004004004004,
+      0.38738738738738737,
+      0.4144144144144143,
+      0.46346346346346345,
+      0.41641641641641647
+    ],
+    "per_judge_rstar_iso_median": 0.4154154154154154,
+    "per_judge_rstar_iso_mean": 0.42559225892559227,
+    "r_consensus_median_of_c": 0.4448768610275399,
+    "r_consensus_mean_of_c": 0.44000803736561445
+  },
+  "uf": {
+    "dataset": "UF",
+    "judges": [
+      "falcon-7b-instruct",
+      "granite-3.0-8b-instruct",
+      "Llama-3-8B-Instruct",
+      "Mistral-7B-Instruct-v0.3",
+      "OLMo-7B-Instruct-hf",
+      "Qwen2.5-7B-Instruct"
+    ],
+    "per_judge_rstar_iso": [
+      0.459214501510574,
+      0.21450151057401812,
+      0.2104733131923464,
+      0.25075528700906347,
+      0.47129909365558886,
+      0.13595166163141995
+    ],
+    "per_judge_rstar_iso_median": 0.2326283987915408,
+    "per_judge_rstar_iso_mean": 0.29036589459550183,
+    "r_consensus_median_of_c": 0.29878329057610503,
+    "r_consensus_mean_of_c": 0.32135231297085287
+  },
+  "drift": {
+    "median_of_c": 0.1460935704514349,
+    "mean_of_c": 0.11865572439476157,
+    "median_of_rstar": 0.1827870166238746,
+    "mean_of_rstar": 0.13522636433009044,
+    "single_judge_spread_hs2": 0.08408408408408402,
+    "single_judge_spread_uf": 0.33534743202416895
+  },
+  "verdict": {
+    "year1_baseline_to_beat": true,
+    "conclusion": "Median-of-c / mean-of-c aggregation produces a SINGLE consensus R\u0302* per dataset but its cross-dataset drift is not meaningfully smaller than the cross-judge spread within one dataset. Weak judges' systematic bias collapses into the consensus. Year-1 margin-matching must improve on this by producing a capacity-invariant quantity, not just a statistical aggregation."
+  }
+}
