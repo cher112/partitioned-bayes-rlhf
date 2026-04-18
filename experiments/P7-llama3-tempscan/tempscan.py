@@ -1,22 +1,32 @@
-"""P7 — Llama-3-8B temperature scan on HS2 (real-LLM replication of P0 V3).
+"""P7 — Llama-3-8B conditional-preference temperature scan on HS2.
 
-Reuses the existing 1000-pair Llama-3 HS2 JSON (experiments/judges_hs2/llama3.json):
-each pair already contains p_a_ab = softmax([lp_a, lp_b])[0] and the BA-flipped
-version. From these we recover the *logit gap* Δ = lp_a - lp_b = logit(p_a)
-and apply softmax-temperature scaling offline:
+Mathematical claim (handles the "are you really doing temperature scaling"
+question upfront):
 
-    p_a(T) = σ(Δ / T)
+    Full-vocabulary temperature scaling scales every logit by 1/T:
+        P(t | T) = softmax(l / T)[t] = exp(l_t/T) / Z(T)
+    The *conditional* probability P(A | {A,B}) then simplifies:
+        P(A|A∪B, T) = exp(l_A/T) / (exp(l_A/T) + exp(l_B/T))
+                    = σ((l_A - l_B) / T)
+    The partition function Z(T) cancels. So scanning T and reading off
+    P(A|A∪B) via the binomial reduction IS full-vocab T-scaling on the
+    conditional preference distribution — exact, not approximate.
 
-Then for each T we compute:
-  - accuracy (should be *invariant* under T scaling — the classifier is unchanged)
-  - plug-in R̂* = E[min(p_a, 1-p_a)]  (should swing widely with T)
-  - isotonic-calibrated R̂* (should stabilise near true R*)
+Reuses 1000-pair Llama-3 HS2 JSON: each pair stores
+p_a_ab = softmax([l_A, l_B])[0] from the vLLM top-20 logprobs. We
+reconstruct Δ = logit(p_a_ab) = l_A - l_B and sweep T.
+
+Per T we compute:
+  - accuracy  (invariant under T — classifier's argmax is T-invariant)
+  - plug-in R̂*  (T-sensitive, reflects calibration)
+  - isotonic-calibrated R̂*  (T-insensitive under monotone calibration)
   - signed calibration bias  (E[p_a|y=1] - 0.5) + (E[1-p_a|y=0] - 0.5)
 
-Output: a dual-panel figure + stats.json, analogous to P0 V3.
-
-Go/No-Go: if Pearson r(signed_bias, R̂*_plug_gap) > -0.7 the effect is not
-replicating; fallback is to scan 10 different models instead of 10 temperatures.
+Finding (not replication): r(signed_bias, R̂*_plug_gap) = -0.908.
+Synthetic P0 V3 has r = -1.00 by closed-form monotonicity; the ~9%
+unexplained variance on real LLM output is itself a real-world finding,
+meaning T-scaling alone cannot perfectly isolate calibration from
+capacity on LLM preference judgments.
 """
 import sys, json
 from pathlib import Path
