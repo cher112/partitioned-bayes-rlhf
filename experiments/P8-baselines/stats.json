@@ -1,0 +1,36 @@
+{
+  "HS2": {
+    "1 - accuracy": {
+      "range": 0.06910000000000005,
+      "spearman_r_with_acc": -1.0,
+      "spearman_p": 0.0
+    },
+    "plug-in R\u0302*": {
+      "range": 0.25579999999999997,
+      "spearman_r_with_acc": -0.8406680016960504,
+      "spearman_p": 0.036057572845159175
+    },
+    "isotonic R\u0302*": {
+      "range": 0.0842,
+      "spearman_r_with_acc": -0.9276336570439174,
+      "spearman_p": 0.007665844187473178
+    }
+  },
+  "UF": {
+    "1 - accuracy": {
+      "range": 0.36650000000000005,
+      "spearman_r_with_acc": -1.0,
+      "spearman_p": 0.0
+    },
+    "plug-in R\u0302*": {
+      "range": 0.3458,
+      "spearman_r_with_acc": -0.9276336570439174,
+      "spearman_p": 0.007665844187473178
+    },
+    "isotonic R\u0302*": {
+      "range": 0.3368,
+      "spearman_r_with_acc": -0.9856107606091624,
+      "spearman_p": 0.0003090856678496653
+    }
+  }
+}

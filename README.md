@@ -52,9 +52,15 @@ Just completed (2026-04-18):
   gap is closed: the capacity confound is a property of real LLM soft-labels,
   not a synthetic artefact.
 
+- ✅ **C8 — Three Bayes-error proxies (1−acc, plug-in, iso) all track judge
+  capability; none is data-side invariant.** On HS2, iso reduces the cross-judge
+  R̂* range 3× vs plug-in (0.26 → 0.08), but still Spearman-correlates −0.93
+  with accuracy; on UF, iso barely narrows (0.35 → 0.34). This motivates the
+  Year-1 `R̂*_CA` estimator, which must operate beyond monotone calibration
+  (Fig. 11).
+
 In flight:
 
-- 🔄 **Baseline comparison** vs raw accuracy + PairRM (Week 1).
 - 🔄 **HS2 real-data sample complexity curve** (Week 2).
 - 🔄 **OOD transfer (HS2 → UF)** for margin-matching parameters (Week 2).
 
@@ -77,6 +83,7 @@ Planned (Year-1 / Year-2 of the proposal):
 | C5 | `O_P(N^{-1/2})` rate holds under BT | [Fig. 5](experiments/P3-synthetic-bt/fig_synthetic_bt.png) + [results_synthetic_bt.json](experiments/P3-synthetic-bt/results_synthetic_bt.json) | Log-log slope `−0.511` (theory `−0.500`), fit over 9 N × 50 seeds |
 | C6 | Confound is not HelpSteer2-specific | [Fig. 9](experiments/analysis_uf_6judges/fig_rstar_partition.png) + [stats_with_ci.json](experiments/analysis_uf_6judges/stats_with_ci.json) | UltraFeedback N=6 judges; `r = −0.999`, Fisher-z CI [−0.9999, −0.993], `p < 10⁻⁴` |
 | C7 | Toy temperature-scaling story replicates on real LLM | [Fig. 10](experiments/P7-llama3-tempscan/fig_tempscan.png) + [stats.json](experiments/P7-llama3-tempscan/stats.json) | Llama-3-8B, 10 T values: plug-in `R̂*` span 0.358, iso span 0.0008; `r(signed_bias, gap) = −0.908`, p = 2.9e-4 |
+| C8 | Simpler baselines (1−acc, plug-in) do not converge to a data-side quantity across 6 judges | [Fig. 11](experiments/P8-baselines/fig_baselines.png) + [stats.json](experiments/P8-baselines/stats.json) | HS2: iso range 0.084 (3× below plug-in 0.258), Spearman(iso, acc) = −0.928; UF: iso range 0.337 vs acc range 0.366 |
 
 ---
 
