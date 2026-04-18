@@ -1,0 +1,242 @@
+{
+  "n_judges": 5,
+  "n_pairs_per_judge": 999,
+  "cv_folds": 5,
+  "cv_seed": 42,
+  "ece_bins": 15,
+  "per_judge_per_method": [
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "method": "raw",
+      "acc": 0.583,
+      "ece": 0.22105114215444388,
+      "brier": 0.30923307006203177,
+      "rstar_plug": 0.21901298594720564
+    },
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "method": "platt",
+      "acc": 0.57,
+      "ece": 0.02647665618501919,
+      "brier": 0.23823903524359324,
+      "rstar_plug": 0.4216445149970319
+    },
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "method": "temperature",
+      "acc": 0.58,
+      "ece": 0.03084602319908807,
+      "brier": 0.23779090441727158,
+      "rstar_plug": 0.4259008713687157
+    },
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "method": "isotonic",
+      "acc": 0.56,
+      "ece": 0.03410462000211854,
+      "brier": 0.2409076397399752,
+      "rstar_plug": 0.40987832914318845
+    },
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "method": "beta",
+      "acc": 0.569,
+      "ece": 0.028929698793429236,
+      "brier": 0.2379067765971514,
+      "rstar_plug": 0.42374485190229905
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "method": "raw",
+      "acc": 0.578,
+      "ece": 0.1348036845443977,
+      "brier": 0.2693150870818867,
+      "rstar_plug": 0.2947692728133877
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "method": "platt",
+      "acc": 0.567,
+      "ece": 0.02419542691019806,
+      "brier": 0.23776019899350911,
+      "rstar_plug": 0.42276220650749874
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "method": "temperature",
+      "acc": 0.578,
+      "ece": 0.03139819576009524,
+      "brier": 0.23721293382872335,
+      "rstar_plug": 0.4252260372381609
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "method": "isotonic",
+      "acc": 0.57,
+      "ece": 0.03711805246450448,
+      "brier": 0.23847543770638077,
+      "rstar_plug": 0.4116589058913448
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "method": "beta",
+      "acc": 0.548,
+      "ece": 0.03370428849931494,
+      "brier": 0.2373569141571683,
+      "rstar_plug": 0.4217536157561726
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "method": "raw",
+      "acc": 0.587,
+      "ece": 0.1694191706216222,
+      "brier": 0.28038560249412753,
+      "rstar_plug": 0.24358082937837772
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "method": "platt",
+      "acc": 0.575,
+      "ece": 0.012994737497406365,
+      "brier": 0.23747542488426993,
+      "rstar_plug": 0.41974705575570875
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "method": "temperature",
+      "acc": 0.587,
+      "ece": 0.01742076404624541,
+      "brier": 0.2370138355858391,
+      "rstar_plug": 0.42163767343530867
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "method": "isotonic",
+      "acc": 0.595,
+      "ece": 0.04609588427844934,
+      "brier": 0.23818614220795029,
+      "rstar_plug": 0.3968544393953314
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "method": "beta",
+      "acc": 0.572,
+      "ece": 0.010612061923004384,
+      "brier": 0.23764465809008067,
+      "rstar_plug": 0.41802484108163146
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "method": "raw",
+      "acc": 0.518,
+      "ece": 0.14832122644088763,
+      "brier": 0.29738899397274826,
+      "rstar_plug": 0.33267877355911235
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "method": "platt",
+      "acc": 0.512,
+      "ece": 0.02251477984497404,
+      "brier": 0.24846148323601802,
+      "rstar_plug": 0.4700822711919444
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "method": "temperature",
+      "acc": 0.518,
+      "ece": 0.005875774144981196,
+      "brier": 0.24814738976122983,
+      "rstar_plug": 0.47656393187261664
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "method": "isotonic",
+      "acc": 0.508,
+      "ece": 0.04297118345805175,
+      "brier": 0.24975522608282585,
+      "rstar_plug": 0.45959583147852606
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "method": "beta",
+      "acc": 0.515,
+      "ece": 0.022064230659748933,
+      "brier": 0.2484647544650121,
+      "rstar_plug": 0.47115879669011335
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "method": "raw",
+      "acc": 0.5185185185185185,
+      "ece": 0.02088285028514628,
+      "brier": 0.25120648235783677,
+      "rstar_plug": 0.4699387577343324
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "method": "platt",
+      "acc": 0.4744744744744745,
+      "ece": 0.04015770306518546,
+      "brier": 0.2513690010508182,
+      "rstar_plug": 0.48536782246034
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "method": "temperature",
+      "acc": 0.5185185185185185,
+      "ece": 0.01940950156930815,
+      "brier": 0.2505848219179538,
+      "rstar_plug": 0.49619232239940475
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "method": "isotonic",
+      "acc": 0.4934934934934935,
+      "ece": 0.034273909172639005,
+      "brier": 0.2537886338276914,
+      "rstar_plug": 0.47123159633286654
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "method": "beta",
+      "acc": 0.4644644644644645,
+      "ece": 0.05251501413805587,
+      "brier": 0.25327247386380985,
+      "rstar_plug": 0.48101851939547763
+    }
+  ],
+  "capacity_confound_correlation_per_method": {
+    "raw": {
+      "r": -0.8374817081064705,
+      "p": 0.07670192131247601,
+      "ci_lo": -0.9889964589513942,
+      "ci_hi": 0.17151141034541792
+    },
+    "platt": {
+      "r": -0.9911625516442133,
+      "p": 0.0009959731827394003,
+      "ci_lo": -0.9994449285972348,
+      "ci_hi": -0.867486988346532
+    },
+    "temperature": {
+      "r": -0.977378804321169,
+      "p": 0.00407031525440624,
+      "ci_lo": -0.9985699070719297,
+      "ci_hi": -0.6907643648799314
+    },
+    "isotonic": {
+      "r": -0.9878765249598405,
+      "p": 0.0015994961173789342,
+      "ci_lo": -0.9992373569636774,
+      "ci_hi": -0.8223182925501419
+    },
+    "beta": {
+      "r": -0.9356610397191842,
+      "p": 0.019400308187337813,
+      "ci_lo": -0.9958505362214164,
+      "ci_hi": -0.3059903969391133
+    }
+  },
+  "interpretation": "Across all 5 post-hoc calibration methods, cross-judge R*_plug remains tightly anti-correlated with judge accuracy. Calibration reduces ECE by an order of magnitude but leaves the capacity confound nearly intact. This validates Gemini Round-4's reframing: isotonic (or any monotone post-hoc calibration) is insufficient for multi-model R* estimation."
+}

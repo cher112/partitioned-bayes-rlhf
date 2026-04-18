@@ -1,0 +1,42 @@
+{
+  "n_bins": 15,
+  "cv_folds": 5,
+  "seed": 42,
+  "per_judge": [
+    {
+      "judge": "Qwen2.5-7B",
+      "n_pairs": 1000,
+      "ece_raw": 0.2210511421544439,
+      "ece_iso": 0.03526847983673065,
+      "ece_reduction_pct": 84.04510400037233
+    },
+    {
+      "judge": "Mistral-7B",
+      "n_pairs": 1000,
+      "ece_raw": 0.1350738322088153,
+      "ece_iso": 0.03818729677418156,
+      "ece_reduction_pct": 71.72857529121815
+    },
+    {
+      "judge": "Granite-3.0-8B",
+      "n_pairs": 1000,
+      "ece_raw": 0.1694191706216222,
+      "ece_iso": 0.04698866898924499,
+      "ece_reduction_pct": 72.26484534374882
+    },
+    {
+      "judge": "OLMo-7B-hf",
+      "n_pairs": 1000,
+      "ece_raw": 0.14846969613702465,
+      "ece_iso": 0.043230566859206995,
+      "ece_reduction_pct": 70.88256527493063
+    },
+    {
+      "judge": "Falcon-7B",
+      "n_pairs": 999,
+      "ece_raw": 0.020924741659840655,
+      "ece_iso": 0.03430825176700037,
+      "ece_reduction_pct": -63.960216688580296
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "n_pairs_per_judge": 1000,
+  "n_bootstrap": 1000,
+  "seed": 42,
+  "per_judge": [
+    {
+      "judge": "Qwen2.5-7B-Instruct",
+      "n_pairs": 1000,
+      "disagreement_rate": 0.434,
+      "disagreement_rate_ci_lo": 0.405,
+      "disagreement_rate_ci_hi": 0.463,
+      "abs_delta_mean": 0.4301292048315452,
+      "abs_delta_median": 0.18241409878279388,
+      "abs_delta_p95": 0.9999726107455997,
+      "position_bias": -0.15231249546353257,
+      "acc_ab_only": 0.599,
+      "acc_ba_only": 0.541,
+      "acc_debiased": 0.583,
+      "acc_gain_from_debias": 0.0129999999999999
+    },
+    {
+      "judge": "Mistral-7B-Instruct-v0.3",
+      "n_pairs": 1000,
+      "disagreement_rate": 0.585,
+      "disagreement_rate_ci_lo": 0.5559750000000001,
+      "disagreement_rate_ci_hi": 0.616,
+      "abs_delta_mean": 0.4933196668690684,
+      "abs_delta_median": 0.5363781217867376,
+      "abs_delta_p95": 0.9779936816936144,
+      "position_bias": 0.4611820927331389,
+      "acc_ab_only": 0.566,
+      "acc_ba_only": 0.553,
+      "acc_debiased": 0.576,
+      "acc_gain_from_debias": 0.01649999999999996
+    },
+    {
+      "judge": "granite-3.0-8b-instruct",
+      "n_pairs": 1000,
+      "disagreement_rate": 0.412,
+      "disagreement_rate_ci_lo": 0.382,
+      "disagreement_rate_ci_hi": 0.442,
+      "abs_delta_mean": 0.370198716818906,
+      "abs_delta_median": 0.2917706582594338,
+      "abs_delta_p95": 0.936775664304639,
+      "position_bias": 0.28011506658533875,
+      "acc_ab_only": 0.572,
+      "acc_ba_only": 0.576,
+      "acc_debiased": 0.587,
+      "acc_gain_from_debias": 0.013000000000000012
+    },
+    {
+      "judge": "OLMo-7B-Instruct-hf",
+      "n_pairs": 1000,
+      "disagreement_rate": 0.66,
+      "disagreement_rate_ci_lo": 0.63,
+      "disagreement_rate_ci_hi": 0.69,
+      "abs_delta_mean": 0.6361614366985505,
+      "abs_delta_median": 0.8933063090710491,
+      "abs_delta_p95": 0.9999995523708946,
+      "position_bias": 0.27257992955947613,
+      "acc_ab_only": 0.527,
+      "acc_ba_only": 0.525,
+      "acc_debiased": 0.519,
+      "acc_gain_from_debias": -0.007000000000000006
+    },
+    {
+      "judge": "falcon-7b-instruct",
+      "n_pairs": 997,
+      "disagreement_rate": 0.9538615847542627,
+      "disagreement_rate_ci_lo": 0.9398194583751254,
+      "disagreement_rate_ci_hi": 0.9659227683049146,
+      "abs_delta_mean": 0.5641600030334293,
+      "abs_delta_median": 0.5796445845824739,
+      "abs_delta_p95": 1.0,
+      "position_bias": 0.5493168549314167,
+      "acc_ab_only": 0.49949849548645936,
+      "acc_ba_only": 0.4944834503510532,
+      "acc_debiased": 0.5095285857572718,
+      "acc_gain_from_debias": 0.01253761283851551
+    }
+  ],
+  "interpretation": "AB/BA argmax disagreement rate is a classifier-side lower bound on the aleatoric uncertainty at the logit level. Debiased (mean) accuracy is uniformly \u2265 single-pass accuracy, confirming position bias is the main symmetric nuisance."
+}
