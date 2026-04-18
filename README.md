@@ -38,12 +38,23 @@ Confirmed (experiments in this repo):
   disagreement spans 41% (Granite) to 95% (Falcon), tightly tracking judge
   accuracy (Fig. 6).
 
+Cross-dataset replication (just completed 2026-04-18):
+
+- ✅ **C6 — UltraFeedback 1000 pairs × 6 judges reproduces the confound.**
+  `r(accuracy, R̂*_iso) = −0.999`, Fisher-z 95% CI [−0.9999, −0.993],
+  `p < 10⁻⁴` (Fig. 9). The confound is not HelpSteer2-specific and, if
+  anything, *stronger* on UF because the score-gap filter keeps easy
+  pairs, widening the accuracy-to-R̂*_iso dynamic range to 3.4× (UF:
+  0.13 → 0.47 vs HS2: 0.39 → 0.47).
+
 In flight:
 
-- 🔄 **UltraFeedback cross-dataset replication** to show the confound is not
-  HelpSteer2-specific (pairs built; 6-judge inference queued).
-- 🔄 **Llama-3-8B temperature scan** — replicate the P0 V3 synthetic finding
-  on a real LLM judge to close the toy-to-real gap.
+- 🔄 **Llama-3-8B temperature scan on HS2** — replicate the P0 V3
+  synthetic finding on a real LLM judge to close the toy-to-real gap
+  (Week 1 of the supplementary plan).
+- 🔄 **Baseline comparison** vs raw accuracy + PairRM (Week 1).
+- 🔄 **HS2 real-data sample complexity curve** (Week 2).
+- 🔄 **OOD transfer (HS2 → UF)** for margin-matching parameters (Week 2).
 
 Planned (Year-1 / Year-2 of the proposal):
 
@@ -62,6 +73,7 @@ Planned (Year-1 / Year-2 of the proposal):
 | C3 | Data-side heterogeneity is classifier-independent | [Fig. 2](experiments/P1-human-partition/fig_partition_hs2pref.png) + [partition_stats_with_ci.json](experiments/P1-human-partition/partition_stats_with_ci.json) | err_rate: k=0 → 0.331 [0.318, 0.344]; k=3 → 0.099 [0.091, 0.107]; CIs disjoint |
 | C4 | `R̂*_CA` pins true `R*` in monotone regime | [Fig. 3](experiments/P0-synthetic-confounding/fig_synthetic_rstar_v4.png) + [results_v4.json](experiments/P0-synthetic-confounding/results_v4.json) | Span across 10 T: plug-in 0.371, `R̂*_CA` 0.001; mean 0.1573 vs true 0.1587 |
 | C5 | `O_P(N^{-1/2})` rate holds under BT | [Fig. 5](experiments/P3-synthetic-bt/fig_synthetic_bt.png) + [results_synthetic_bt.json](experiments/P3-synthetic-bt/results_synthetic_bt.json) | Log-log slope `−0.511` (theory `−0.500`), fit over 9 N × 50 seeds |
+| C6 | Confound is not HelpSteer2-specific | [Fig. 9](experiments/analysis_uf_6judges/fig_rstar_partition.png) + [stats_with_ci.json](experiments/analysis_uf_6judges/stats_with_ci.json) | UltraFeedback N=6 judges; `r = −0.999`, Fisher-z CI [−0.9999, −0.993], `p < 10⁻⁴` |
 
 ---
 
