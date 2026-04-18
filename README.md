@@ -1,5 +1,7 @@
 # Partitioned Bayes Error for RLHF Preference Data
 
+> 📖 Languages · **English** · [中文](README.zh-CN.md)
+
 > **Code and data supplementary** for a Master's research proposal (UTokyo / Sugiyama-Ishida lab, 2026). This repository hosts preliminary experiments that motivate a 2-year research program on **calibration-aware Bayes error estimation** for RLHF preference data. The proposal itself is a separate document; this README contains the full empirical backing.
 
 ---
@@ -76,9 +78,19 @@ Just completed (2026-04-18):
   property under calibrator refitting — the current script corrects
   this.)*
 
-In flight:
+- ✅ **C10 — 6-judge ranking is consistent across HS2 and UF despite
+  different gold definitions.** Spearman(R̂*_iso on HS2, R̂*_iso on UF) =
+  **+0.77** (N=6, small-sample caveat), Pearson `r = 0.89`, Fisher-z CI
+  [0.30, 0.99] (Fig. 13). Weaker than a full OOD-transfer claim (which
+  would confound covariate and concept shift) but still positive
+  evidence that judge-level uncertainty signal has cross-dataset
+  stability.
 
-- 🔄 **OOD transfer (HS2 → UF)** for margin-matching parameters (Week 2).
+In flight (Week 2):
+
+- 🔄 **Per-judge failure-mode narrative** (M5) — turn the P4/P5/P6
+  results into a 1-paragraph story "Falcon low ECE ≠ good judge" for
+  the proposal.
 
 Planned (Year-1 / Year-2 of the proposal):
 
@@ -101,6 +113,7 @@ Planned (Year-1 / Year-2 of the proposal):
 | C7 | Conditional-preference temperature scan on real LLM — plug-in `R̂*` is calibration-confounded; iso is not | [Fig. 10](experiments/P7-llama3-tempscan/fig_tempscan.png) + [stats.json](experiments/P7-llama3-tempscan/stats.json) | Llama-3-8B, 10 T values: plug-in span 0.358 (21×), iso span 0.0008, acc flat at 0.586; `r(signed_bias, gap) = −0.908`, p = 2.9e-4. (Full-vocab T-scaling reduces to `P(A\|A∪B,T) = σ((l_A−l_B)/T)` exactly — partition function cancels.) |
 | C8 | Monotone calibration is a dataset-dependent fix — motivates `R̂*_CA` | [Fig. 11](experiments/P8-baselines/fig_baselines.png) + [stats.json](experiments/P8-baselines/stats.json) | HS2: iso range 0.084 (3× below plug-in 0.258); UF: iso range 0.337 ≈ 1−acc range 0.367, Spearman(iso, acc) = **−0.986** (iso degenerates on UF) |
 | C9 | Joint (isotonic-refit + plug-in) HS2 sample complexity has empirical slope −0.750 | [Fig. 12](experiments/P9-hs2-sample-complexity/fig_sample_complexity.png) + [stats.json](experiments/P9-hs2-sample-complexity/stats.json) | Subsampling (without replacement) at N ∈ {100…800}, 100 seeds × 6 judges. Log-log slope = **−0.750** (R² = 0.968), steeper than CLT reference −0.500 — the calibrator fit couples bias-variance in a non-trivial way |
+| C10 | Judge ranking is stable across HS2 and UF | [Fig. 13](experiments/P10-cross-dataset-rank/fig_cross_dataset_rank.png) + [stats.json](experiments/P10-cross-dataset-rank/stats.json) | Spearman ρ = +0.77 (p = 0.07); Pearson r = +0.89, Fisher-z CI [0.30, 0.99]; gold defs differ (HS2 human-majority vs UF GPT-4 score-gap) so this is ranking consistency, not OOD-transfer |
 
 ---
 
