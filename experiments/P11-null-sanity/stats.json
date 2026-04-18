@@ -1,0 +1,163 @@
+{
+  "falcon-7b-instruct": {
+    "real": {
+      "rstar_iso": 0.4714714714714714,
+      "rstar_plug": 0.4699387577343324
+    },
+    "null": {
+      "rstar_iso_mean": 0.4784034034034034,
+      "rstar_iso_std": 0.009255843051313599,
+      "rstar_iso_ci95": [
+        0.45740740740740743,
+        0.4904904904904905
+      ],
+      "rstar_plug_mean": 0.4699387577343323,
+      "rstar_plug_std": 1.1102230246251565e-16
+    },
+    "drift_from_05": 0.021596596596596573
+  },
+  "granite-3.0-8b-instruct": {
+    "real": {
+      "rstar_iso": 0.4,
+      "rstar_plug": 0.24358082937837772
+    },
+    "null": {
+      "rstar_iso_mean": 0.47716499999999995,
+      "rstar_iso_std": 0.008739437910987162,
+      "rstar_iso_ci95": [
+        0.45995,
+        0.48999999999999977
+      ],
+      "rstar_plug_mean": 0.24358082937837772,
+      "rstar_plug_std": 0.0
+    },
+    "drift_from_05": 0.02283500000000005
+  },
+  "Llama-3-8B-Instruct": {
+    "real": {
+      "rstar_iso": 0.387,
+      "rstar_plug": 0.21440195886130523
+    },
+    "null": {
+      "rstar_iso_mean": 0.47735,
+      "rstar_iso_std": 0.009878132414581195,
+      "rstar_iso_ci95": [
+        0.4539,
+        0.49
+      ],
+      "rstar_plug_mean": 0.21440195886130525,
+      "rstar_plug_std": 2.7755575615628914e-17
+    },
+    "drift_from_05": 0.022650000000000003
+  },
+  "Mistral-7B-Instruct-v0.3": {
+    "real": {
+      "rstar_iso": 0.414,
+      "rstar_plug": 0.2947692728133877
+    },
+    "null": {
+      "rstar_iso_mean": 0.4780249999999999,
+      "rstar_iso_std": 0.008566468058657527,
+      "rstar_iso_ci95": [
+        0.46,
+        0.4899999999999997
+      ],
+      "rstar_plug_mean": 0.29476927281338766,
+      "rstar_plug_std": 5.551115123125783e-17
+    },
+    "drift_from_05": 0.021975000000000078
+  },
+  "OLMo-7B-Instruct-hf": {
+    "real": {
+      "rstar_iso": 0.46400000000000013,
+      "rstar_plug": 0.33267877355911235
+    },
+    "null": {
+      "rstar_iso_mean": 0.47852000000000006,
+      "rstar_iso_std": 0.008985521687692913,
+      "rstar_iso_ci95": [
+        0.45697499999999996,
+        0.49000000000000005
+      ],
+      "rstar_plug_mean": 0.3326787735591124,
+      "rstar_plug_std": 5.551115123125783e-17
+    },
+    "drift_from_05": 0.021479999999999944
+  },
+  "Qwen2.5-7B-Instruct": {
+    "real": {
+      "rstar_iso": 0.41600000000000004,
+      "rstar_plug": 0.21901298594720564
+    },
+    "null": {
+      "rstar_iso_mean": 0.4770850000000232,
+      "rstar_iso_std": 0.009984376545350285,
+      "rstar_iso_ci95": [
+        0.4519749999999999,
+        0.49
+      ],
+      "rstar_plug_mean": 0.21901298594720564,
+      "rstar_plug_std": 0.0
+    },
+    "drift_from_05": 0.022914999999976815
+  },
+  "_summary": {
+    "n_permutations": 200,
+    "class_prior_approx": 0.51,
+    "expected_null_iso": 0.49,
+    "max_drift_from_expected": 0.012914999999976806,
+    "plug_in_gold_invariant": true,
+    "signal_vs_null_per_judge": {
+      "falcon-7b-instruct": {
+        "real_iso": 0.4714714714714714,
+        "null_ci_95": [
+          0.45740740740740743,
+          0.4904904904904905
+        ],
+        "signal_vs_null": "INSIDE null CI \u2014 not distinguishable"
+      },
+      "granite-3.0-8b-instruct": {
+        "real_iso": 0.4,
+        "null_ci_95": [
+          0.45995,
+          0.48999999999999977
+        ],
+        "signal_vs_null": "OUTSIDE null CI"
+      },
+      "Llama-3-8B-Instruct": {
+        "real_iso": 0.387,
+        "null_ci_95": [
+          0.4539,
+          0.49
+        ],
+        "signal_vs_null": "OUTSIDE null CI"
+      },
+      "Mistral-7B-Instruct-v0.3": {
+        "real_iso": 0.414,
+        "null_ci_95": [
+          0.46,
+          0.4899999999999997
+        ],
+        "signal_vs_null": "OUTSIDE null CI"
+      },
+      "OLMo-7B-Instruct-hf": {
+        "real_iso": 0.46400000000000013,
+        "null_ci_95": [
+          0.45697499999999996,
+          0.49000000000000005
+        ],
+        "signal_vs_null": "INSIDE null CI \u2014 not distinguishable"
+      },
+      "Qwen2.5-7B-Instruct": {
+        "real_iso": 0.41600000000000004,
+        "null_ci_95": [
+          0.4519749999999999,
+          0.49
+        ],
+        "signal_vs_null": "OUTSIDE null CI"
+      }
+    },
+    "pass_criterion": "null iso within 0.02 of class prior AND plug-in is gold-invariant",
+    "pass": true
+  }
+}
