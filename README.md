@@ -92,8 +92,16 @@ observed data; no formal isomorphism is claimed.*
   aleatoric floor tracks judge weakness (Fig. 6).
 
 **Synthetic theoretical anchors**:
-- **C4** On a 2-Gaussian toy with known `R* = 0.159`, `R̂*_CA` pins the truth
-  within 0.001 across a 23× plug-in swing (Fig. 3).
+- **C4** On a 2-Gaussian toy with known `R* = 0.159`, isotonic calibration
+  pins the truth within 0.001 across a 23× plug-in swing (Fig. 3).
+  *Correction (2026-04-18): the earlier "R̂*_CA" label in P0 V4 referred
+  to the formula `R̂*_raw + (E|η̂−½| − E|η_iso−½|)`, which is
+  **algebraically identical** to `R̂*_iso` (see P14 for the derivation
+  `0.5 − m_hat + m_hat − m_iso = 0.5 − m_iso`). C4 therefore states only
+  that isotonic works in the monotone-coupled regime, not that a
+  distinct `R̂*_CA` estimator is already in hand. Year-1 must design a
+  genuinely new correction (signed-bias-asymmetric) that is **not**
+  collapsible to isotonic.*
 - **C2** Platt / Temperature / Isotonic / Beta all *preserve* the confound
   (`r ≤ −0.94`) despite 10–20× ECE reduction — monotone calibration is
   structurally insufficient (Fig. 7).
