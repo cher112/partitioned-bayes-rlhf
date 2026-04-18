@@ -1,0 +1,260 @@
+{
+  "thresholds": [
+    {
+      "tau": 2,
+      "n_pairs_mean": 998.8333333333334,
+      "accuracy_mean": 0.6992799597180261,
+      "accuracy_range": [
+        0.497,
+        0.86
+      ],
+      "rstar_iso_mean": 0.2918690835850956,
+      "rstar_iso_range": [
+        0.139,
+        0.473
+      ],
+      "pearson_r": -0.9993690869378082,
+      "pearson_p": 5.969513701864936e-07,
+      "fisher_z_ci_95": [
+        -0.9999343538280059,
+        -0.9939511343715227
+      ],
+      "per_judge": [
+        {
+          "judge": "falcon-7b-instruct",
+          "tau": 2,
+          "n": 993,
+          "acc": 0.525679758308157,
+          "rstar_iso": 0.459214501510574
+        },
+        {
+          "judge": "granite-3.0-8b-instruct",
+          "tau": 2,
+          "n": 1000,
+          "acc": 0.783,
+          "rstar_iso": 0.216
+        },
+        {
+          "judge": "Llama-3-8B-Instruct",
+          "tau": 2,
+          "n": 1000,
+          "acc": 0.783,
+          "rstar_iso": 0.212
+        },
+        {
+          "judge": "Mistral-7B-Instruct-v0.3",
+          "tau": 2,
+          "n": 1000,
+          "acc": 0.747,
+          "rstar_iso": 0.252
+        },
+        {
+          "judge": "OLMo-7B-Instruct-hf",
+          "tau": 2,
+          "n": 1000,
+          "acc": 0.497,
+          "rstar_iso": 0.473
+        },
+        {
+          "judge": "Qwen2.5-7B-Instruct",
+          "tau": 2,
+          "n": 1000,
+          "acc": 0.86,
+          "rstar_iso": 0.139
+        }
+      ]
+    },
+    {
+      "tau": 3,
+      "n_pairs_mean": 695.0,
+      "accuracy_mean": 0.7126707479593536,
+      "accuracy_range": [
+        0.5158045977011494,
+        0.8807471264367817
+      ],
+      "rstar_iso_mean": 0.28083666500083293,
+      "rstar_iso_range": [
+        0.11781609195402298,
+        0.47413793103448276
+      ],
+      "pearson_r": -0.9998020739950577,
+      "pearson_p": 5.87581783023468e-08,
+      "fisher_z_ci_95": [
+        -0.999979409898449,
+        -0.998098853015796
+      ],
+      "per_judge": [
+        {
+          "judge": "falcon-7b-instruct",
+          "tau": 3,
+          "n": 690,
+          "acc": 0.518840579710145,
+          "rstar_iso": 0.4623188405797101
+        },
+        {
+          "judge": "granite-3.0-8b-instruct",
+          "tau": 3,
+          "n": 696,
+          "acc": 0.8045977011494253,
+          "rstar_iso": 0.1939655172413793
+        },
+        {
+          "judge": "Llama-3-8B-Instruct",
+          "tau": 3,
+          "n": 696,
+          "acc": 0.7916666666666666,
+          "rstar_iso": 0.20545977011494254
+        },
+        {
+          "judge": "Mistral-7B-Instruct-v0.3",
+          "tau": 3,
+          "n": 696,
+          "acc": 0.764367816091954,
+          "rstar_iso": 0.23132183908045972
+        },
+        {
+          "judge": "OLMo-7B-Instruct-hf",
+          "tau": 3,
+          "n": 696,
+          "acc": 0.5158045977011494,
+          "rstar_iso": 0.47413793103448276
+        },
+        {
+          "judge": "Qwen2.5-7B-Instruct",
+          "tau": 3,
+          "n": 696,
+          "acc": 0.8807471264367817,
+          "rstar_iso": 0.11781609195402298
+        }
+      ]
+    },
+    {
+      "tau": 4,
+      "n_pairs_mean": 502.1666666666667,
+      "accuracy_mean": 0.7268158119555758,
+      "accuracy_range": [
+        0.5060240963855421,
+        0.8946322067594433
+      ],
+      "rstar_iso_mean": 0.2668620139936818,
+      "rstar_iso_range": [
+        0.10139165009940358,
+        0.4779116465863453
+      ],
+      "pearson_r": -0.999751155424283,
+      "pearson_p": 9.287772961678991e-08,
+      "fisher_z_ci_95": [
+        -0.9999741122851618,
+        -0.9976102863295189
+      ],
+      "per_judge": [
+        {
+          "judge": "falcon-7b-instruct",
+          "tau": 4,
+          "n": 498,
+          "acc": 0.5060240963855421,
+          "rstar_iso": 0.4779116465863453
+        },
+        {
+          "judge": "granite-3.0-8b-instruct",
+          "tau": 4,
+          "n": 503,
+          "acc": 0.8250497017892644,
+          "rstar_iso": 0.17296222664015903
+        },
+        {
+          "judge": "Llama-3-8B-Instruct",
+          "tau": 4,
+          "n": 503,
+          "acc": 0.8170974155069582,
+          "rstar_iso": 0.18091451292246521
+        },
+        {
+          "judge": "Mistral-7B-Instruct-v0.3",
+          "tau": 4,
+          "n": 503,
+          "acc": 0.7773359840954275,
+          "rstar_iso": 0.2147117296222664
+        },
+        {
+          "judge": "OLMo-7B-Instruct-hf",
+          "tau": 4,
+          "n": 503,
+          "acc": 0.5407554671968191,
+          "rstar_iso": 0.4532803180914513
+        },
+        {
+          "judge": "Qwen2.5-7B-Instruct",
+          "tau": 4,
+          "n": 503,
+          "acc": 0.8946322067594433,
+          "rstar_iso": 0.10139165009940358
+        }
+      ]
+    },
+    {
+      "tau": 5,
+      "n_pairs_mean": 307.1666666666667,
+      "accuracy_mean": 0.741075893303616,
+      "accuracy_range": [
+        0.5016501650165016,
+        0.9058441558441559
+      ],
+      "rstar_iso_mean": 0.24803016015887303,
+      "rstar_iso_range": [
+        0.08441558441558442,
+        0.47194719471947194
+      ],
+      "pearson_r": -0.998971385565897,
+      "pearson_p": 1.5865273195229665e-06,
+      "fisher_z_ci_95": [
+        -0.9998929541322673,
+        -0.9901549977742639
+      ],
+      "per_judge": [
+        {
+          "judge": "falcon-7b-instruct",
+          "tau": 5,
+          "n": 303,
+          "acc": 0.5016501650165016,
+          "rstar_iso": 0.47194719471947194
+        },
+        {
+          "judge": "granite-3.0-8b-instruct",
+          "tau": 5,
+          "n": 308,
+          "acc": 0.8409090909090909,
+          "rstar_iso": 0.15584415584415584
+        },
+        {
+          "judge": "Llama-3-8B-Instruct",
+          "tau": 5,
+          "n": 308,
+          "acc": 0.8409090909090909,
+          "rstar_iso": 0.15584415584415584
+        },
+        {
+          "judge": "Mistral-7B-Instruct-v0.3",
+          "tau": 5,
+          "n": 308,
+          "acc": 0.7857142857142857,
+          "rstar_iso": 0.19805194805194806
+        },
+        {
+          "judge": "OLMo-7B-Instruct-hf",
+          "tau": 5,
+          "n": 308,
+          "acc": 0.5714285714285714,
+          "rstar_iso": 0.42207792207792205
+        },
+        {
+          "judge": "Qwen2.5-7B-Instruct",
+          "tau": 5,
+          "n": 308,
+          "acc": 0.9058441558441559,
+          "rstar_iso": 0.08441558441558442
+        }
+      ]
+    }
+  ]
+}
