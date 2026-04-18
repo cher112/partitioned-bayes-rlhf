@@ -4,11 +4,72 @@
 
 ---
 
+## The Idea
+
+Ishida et al. (ICLR 2023 oral) proposed an instance-free estimator of the binary
+Bayes error, `R* = E[min(η, 1-η)]`, from soft labels. In RLHF these soft labels
+are routinely obtained from LLM judges — but judges are systematically
+miscalibrated, and we find that plugging them into Ishida's estimator yields
+values dominated by judge **capacity**, not by data-side noise. We extend the
+estimator to Bradley-Terry preference, formalize the capacity confound via an
+exact **margin-gap identity** `E[R̂*] − R* = −E[|η̂−½| − |η−½|]`, and build a
+calibration-aware estimator `R̂*_CA` that pins the true `R*` within 0.001
+across a 23× plug-in swing on synthetic data (Fig. 3).
+
+## Contributions
+
+Confirmed (experiments in this repo):
+
+- ✅ **C1 — Capacity confound is real on LLM judges.** Six open-source 7B/8B
+  judges (Falcon, OLMo, Mistral, Qwen2.5, Granite-3.0, Llama-3-8B) on
+  HelpSteer2 show `r(accuracy, R̂*_iso) = −0.97`, Fisher-z 95% CI
+  [−0.996, −0.719], `p = 0.002` (Fig. 4).
+- ✅ **C2 — Monotone post-hoc calibration is insufficient.** Platt / Temperature
+  / Isotonic / Beta all *preserve* the confound (`r ≤ −0.94`) while reducing
+  ECE by 10–20× (Fig. 7).
+- ✅ **C3 — Annotator-disagreement heterogeneity is real and classifier-free.**
+  Across 9125 HelpSteer2-Preference pairs × 3 annotators, per-annotator error
+  rate spans 3.3× by `|strength|` bin (CIs disjoint), computed with no
+  classifier (Fig. 2). This is a *proxy* for partition-conditional `R*|A_k`.
+- ✅ **C4 — Corrected estimator recovers true `R*` in the monotone regime.**
+  `R̂*_CA` stays within 0.001 of analytic `R* = 0.159` across 10 temperatures
+  (Fig. 3); synthetic BT verifies the `O_P(N^{-1/2})` rate (Fig. 5).
+- ✅ **C5 — Aleatoric noise floors scale with judge weakness.** AB/BA self-
+  disagreement spans 41% (Granite) to 95% (Falcon), tightly tracking judge
+  accuracy (Fig. 6).
+
+In flight:
+
+- 🔄 **UltraFeedback cross-dataset replication** to show the confound is not
+  HelpSteer2-specific (pairs built; 6-judge inference queued).
+- 🔄 **Llama-3-8B temperature scan** — replicate the P0 V3 synthetic finding
+  on a real LLM judge to close the toy-to-real gap.
+
+Planned (Year-1 / Year-2 of the proposal):
+
+- 📋 **Formal theorem**: `|R̂*_CA − R*| = O_P(M^{-1/3}) + O_P(N^{-1/2})` under
+  BT assumption and monotone-coupled calibration (Year-1).
+- 📋 **IW-DPO with partition weights derived from `R̂*_CA`** — Year-2 D4.
+- 📋 **Complementary-label preference learning** (Ishida 2017 lineage × Yin
+  2026 scalable oversight) — Year-2 D6.
+
+## Claim-evidence map
+
+| # | Claim | Evidence | Metric (95% CI where applicable) |
+|---|-------|----------|-----------------------------------|
+| C1 | Cross-judge `R̂*` is a capacity proxy | [Fig. 4](experiments/P2-ece-vs-rstar/fig_acc_vs_rstar.png) + [stats_with_ci_6judges.json](experiments/P2-ece-vs-rstar/stats_with_ci_6judges.json) | N=6 judges; Pearson `r = −0.97`, Fisher-z CI [−0.996, −0.719], `p = 0.002` |
+| C2 | No monotone calibrator removes the confound | [Fig. 7](experiments/P5-calibration-showdown/fig_calibration_showdown.png) + [summary.json](experiments/P5-calibration-showdown/summary.json) | After Platt/Temp/Iso/Beta, `r(acc, R̂*) ∈ [−0.99, −0.94]`; ECE ↓ 10-20× |
+| C3 | Data-side heterogeneity is classifier-independent | [Fig. 2](experiments/P1-human-partition/fig_partition_hs2pref.png) + [partition_stats_with_ci.json](experiments/P1-human-partition/partition_stats_with_ci.json) | err_rate: k=0 → 0.331 [0.318, 0.344]; k=3 → 0.099 [0.091, 0.107]; CIs disjoint |
+| C4 | `R̂*_CA` pins true `R*` in monotone regime | [Fig. 3](experiments/P0-synthetic-confounding/fig_synthetic_rstar_v4.png) + [results_v4.json](experiments/P0-synthetic-confounding/results_v4.json) | Span across 10 T: plug-in 0.371, `R̂*_CA` 0.001; mean 0.1573 vs true 0.1587 |
+| C5 | `O_P(N^{-1/2})` rate holds under BT | [Fig. 5](experiments/P3-synthetic-bt/fig_synthetic_bt.png) + [results_synthetic_bt.json](experiments/P3-synthetic-bt/results_synthetic_bt.json) | Log-log slope `−0.511` (theory `−0.500`), fit over 9 N × 50 seeds |
+
+---
+
 ## TL;DR
 
 - Ishida (ICLR 2023 oral) gives an instance-free estimator `R̂* = (1/N) Σ min(c_i, 1-c_i)` for the Bayes error from soft labels.
 - In RLHF, the "soft labels" come from LLM judges, which are **systematically miscalibrated**. Plugging in naively yields estimates dominated by **classifier capacity**, not data-side noise.
-- We establish this empirically on a 2-Gaussian toy (**23× spread in R̂* at fixed accuracy**, Fig. 1) and on 5 open-source 7B/8B LLM judges on HelpSteer2 (**Pearson `r(accuracy, R̂*_iso) = -0.98`**, Fig. 4).
+- We establish this empirically on a 2-Gaussian toy (**23× spread in R̂* at fixed accuracy**, Fig. 1) and on 6 open-source 7B/8B LLM judges on HelpSteer2 (**Pearson `r(accuracy, R̂*_iso) = -0.97`**, Fisher-z CI [-0.996, -0.719], Fig. 4).
 - HelpSteer2's 9125 human-annotator preferences show genuine **3.3× data-side heterogeneity** across partition strength bins (Fig. 2) — classifier-independent.
 - A first-pass corrected estimator (isotonic + plug-in) pins `R̂*` to the true value within ±0.001 across 10 temperatures on the toy (Fig. 3), proving the correction is feasible in the monotone regime. The Year-1 research target is the **rank-breaking multi-model** regime.
 - The *entire* monotone post-hoc calibration family (Platt / Temperature / Isotonic / Beta) preserves or strengthens the capacity confound, not just isotonic (Fig. 7). The Year-1 target must operate beyond monotone transformations.
@@ -53,21 +114,22 @@ Four estimators on the same 10-temperature grid:
 
 Isotonic calibration's rank-based nature makes it invariant to temperature scaling. Under this monotone regime, the corrected estimator achieves the target consistency. Script: [synthetic_demo_v4.py](experiments/P0-synthetic-confounding/synthetic_demo_v4.py). Raw data: [results_v4.json](experiments/P0-synthetic-confounding/results_v4.json).
 
-### Fig. 4 — Isotonic alone is insufficient in the multi-model regime (negative result)
+### Fig. 4 — Isotonic alone is insufficient in the multi-model regime (6 judges)
 
 ![P2](experiments/P2-ece-vs-rstar/fig_acc_vs_rstar.png)
 
-Five open-source LLM judges (Qwen, Mistral, Granite, OLMo, Falcon) score 1000 HelpSteer2 pairs each with AB/BA debiasing. Per-judge isotonic calibration reduces ECE from 0.03–0.21 to 0.03–0.04, **yet** `R̂*_iso` remains tightly correlated with judge accuracy:
+Six open-source LLM judges (Llama-3-8B, Granite-3.0-8B, Qwen-2.5-7B, Mistral-7B-v0.3, OLMo-7B-hf, Falcon-7B) score 1000 HelpSteer2 pairs each with AB/BA debiasing. Per-judge isotonic calibration reduces ECE from 0.03–0.21 to 0.03–0.04, **yet** `R̂*_iso` remains tightly correlated with judge accuracy:
 
 | Judge | accuracy | R̂*_iso | ECE_iso |
 |---|---|---|---|
-| Granite-3.0-8B | 0.587 | **0.398** | 0.039 |
+| Llama-3-8B | 0.587 | **0.386** | 0.037 |
+| Granite-3.0-8B | 0.587 | 0.398 | 0.039 |
 | Qwen-2.5-7B | 0.583 | 0.414 | 0.043 |
 | Mistral-7B-v0.3 | 0.578 | 0.414 | 0.032 |
 | OLMo-7B-hf | 0.518 | 0.461 | 0.029 |
 | Falcon-7B | 0.519 | **0.471** | 0.030 |
 
-Pearson `r(accuracy, R̂*_iso) = −0.98`, p = 0.003 (Fisher-z 95% CI [-0.999, -0.761]). Since the underlying `(X, Y)` distribution is identical across judges, true `R*` is a single number; the 0.073 span reflects **rank-breaking** calibration differences that single-model isotonic cannot reconcile. Script: [plot.py](experiments/P2-ece-vs-rstar/plot.py). Raw data: [cross_partition_stats.json](experiments/analysis_hs2_5judges/cross_partition_stats.json), [stats_with_ci.json](experiments/P2-ece-vs-rstar/stats_with_ci.json).
+Pearson `r(accuracy, R̂*_iso) = −0.97`, p = 0.002 (Fisher-z 95% CI [−0.996, −0.719]; bootstrap CI [−0.998, −0.822], 10K resamples). Since the underlying `(X, Y)` distribution is identical across judges, true `R*` is a single number; the 0.085 span (Llama-3 low → Falcon high) reflects **rank-breaking** calibration differences that single-model isotonic cannot reconcile. Script: [plot.py](experiments/P2-ece-vs-rstar/plot.py). Raw data: [cross_partition_stats.json](experiments/analysis_hs2_6judges/cross_partition_stats.json), [stats_with_ci_6judges.json](experiments/P2-ece-vs-rstar/stats_with_ci_6judges.json).
 
 ### Fig. 5 — Synthetic Bradley-Terry with known reward (theoretical anchor)
 
