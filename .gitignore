@@ -1,0 +1,31 @@
+# Models, datasets, caches — re-downloadable via scripts
+data/
+models/
+hf_cache/
+**/.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs — keep figures and JSON stats, drop large text logs
+*.log
+!experiments/**/*.log          # per-run logs inside experiments/ ARE versioned for reproducibility
+
+# Temporary
+*.tmp
+*.bak
+.obsidian/

@@ -1,0 +1,24 @@
+{
+  "pearson_ece_raw_vs_rstar_raw": {
+    "r": -0.9709861630830733,
+    "p": 0.005906666531395057
+  },
+  "spearman_ece_raw_vs_rstar_raw": {
+    "rho": -0.8999999999999998,
+    "p": 0.03738607346849874
+  },
+  "pearson_ece_iso_vs_rstar_iso": {
+    "r": -0.7481244895210504,
+    "p": 0.14587564356266422
+  },
+  "spearman_ece_iso_vs_rstar_iso": {
+    "rho": -0.7999999999999999,
+    "p": 0.10408803866182788
+  },
+  "pearson_acc_vs_rstar_iso": {
+    "r": -0.9831776119450281,
+    "p": 0.0026125608030469188
+  },
+  "n_judges": 5,
+  "interpretation": "High positive corr between ECE_raw and R*_raw would directly show the plug-in estimator bias is dominated by judge calibration error, not by data-side noise. Negative acc-vs-R* corr (stronger judges \u2192 lower R*) is the same story from the capacity angle."
+}

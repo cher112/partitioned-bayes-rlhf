@@ -1,0 +1,26 @@
+# Partitioned Bayes Error for RLHF — pinned dependencies
+# Tested on Python 3.12, CUDA 12.8, RTX PRO 6000 Blackwell.
+
+# LLM inference
+torch==2.10.0
+vllm==0.19.0
+transformers>=4.50.0
+tokenizers>=0.20
+safetensors>=0.4.5
+flash-attn>=2.6.0       # optional; vLLM will fall back
+
+# Data
+datasets>=2.21
+huggingface-hub>=0.26
+scikit-learn>=1.5       # IsotonicRegression, KFold
+
+# Scientific stack
+numpy>=1.26
+scipy>=1.13
+pandas>=2.2
+matplotlib>=3.9
+seaborn>=0.13
+
+# Dev utilities
+tqdm>=4.66
+pyyaml>=6.0

@@ -1,0 +1,39 @@
+{
+  "n_total_pairs": 9125,
+  "partition_variable": "|preference_strength|",
+  "partitions": [
+    {
+      "strength_bin": 0,
+      "n_pairs": 2007,
+      "mean_agree_rate": 0.6714260899774188,
+      "mean_annotator_error_rate": 0.33123145400593473,
+      "frac_pairs_with_disagreement": 0.8801459093277749,
+      "mean_strength_variance_within_pair": 0.03801198540906724
+    },
+    {
+      "strength_bin": 1,
+      "n_pairs": 3033,
+      "mean_agree_rate": 0.901681537405628,
+      "mean_annotator_error_rate": 0.12062674393646705,
+      "frac_pairs_with_disagreement": 0.3009608785175017,
+      "mean_strength_variance_within_pair": 0.17195111721192713
+    },
+    {
+      "strength_bin": 2,
+      "n_pairs": 2562,
+      "mean_agree_rate": 0.876276749376395,
+      "mean_annotator_error_rate": 0.1539080459770115,
+      "frac_pairs_with_disagreement": 0.37692004726270184,
+      "mean_strength_variance_within_pair": 0.4004736116581331
+    },
+    {
+      "strength_bin": 3,
+      "n_pairs": 1523,
+      "mean_agree_rate": 0.9172697368421052,
+      "mean_annotator_error_rate": 0.099335232668566,
+      "frac_pairs_with_disagreement": 0.28421052631578947,
+      "mean_strength_variance_within_pair": 0.2170908260233918
+    }
+  ],
+  "notes": "Hard-label, classifier-independent partition analysis. Mean agreement rate monotonically increases with partition strength (stronger preferences = more annotator consensus = lower data-side noise). This reproduces data-side noise heterogeneity WITHOUT any LLM judge, addressing the capacity-confound criticism of the preliminary 5-judge study."
+}

@@ -1,0 +1,18 @@
+{
+  "rstar_per_judge": {
+    "falcon-7b-instruct": 0.47054054847144866,
+    "granite-3.0-8b-instruct": 0.3980257938633399,
+    "Mistral-7B-Instruct-v0.3": 0.41414433346669655,
+    "OLMo-7B-Instruct-hf": 0.46070800276856744,
+    "Qwen2.5-7B-Instruct": 0.4140297619873542
+  },
+  "mean_rstar": 0.4314896881114814,
+  "std_rstar": 0.028650382798553625,
+  "var_rstar": 0.0008208444345036575,
+  "var_bootstrap_ci": [
+    1.018379687079806e-05,
+    0.00026823971521784977
+  ],
+  "permutation_null_mean_var": 0.00010146242794600631,
+  "permutation_p_value": 0.0
+}
