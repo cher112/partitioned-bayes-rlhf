@@ -11,10 +11,11 @@
 - We establish this empirically on a 2-Gaussian toy (**23× spread in R̂* at fixed accuracy**, Fig. 1) and on 5 open-source 7B/8B LLM judges on HelpSteer2 (**Pearson `r(accuracy, R̂*_iso) = -0.98`**, Fig. 4).
 - HelpSteer2's 9125 human-annotator preferences show genuine **3.3× data-side heterogeneity** across partition strength bins (Fig. 2) — classifier-independent.
 - A first-pass corrected estimator (isotonic + plug-in) pins `R̂*` to the true value within ±0.001 across 10 temperatures on the toy (Fig. 3), proving the correction is feasible in the monotone regime. The Year-1 research target is the **rank-breaking multi-model** regime.
+- The *entire* monotone post-hoc calibration family (Platt / Temperature / Isotonic / Beta) preserves or strengthens the capacity confound, not just isotonic (Fig. 7). The Year-1 target must operate beyond monotone transformations.
 
 ---
 
-## Four headline figures
+## Eight headline figures
 
 ### Fig. 1 — Plug-in R̂* is driven by calibration, not data noise
 
@@ -66,7 +67,51 @@ Five open-source LLM judges (Qwen, Mistral, Granite, OLMo, Falcon) score 1000 He
 | OLMo-7B-hf | 0.518 | 0.461 | 0.029 |
 | Falcon-7B | 0.519 | **0.471** | 0.030 |
 
-Pearson `r(accuracy, R̂*_iso) = −0.98`, p = 0.003. Since the underlying `(X, Y)` distribution is identical across judges, true `R*` is a single number; the 0.073 span reflects **rank-breaking** calibration differences that single-model isotonic cannot reconcile. Script: [plot.py](experiments/P2-ece-vs-rstar/plot.py). Raw data: [cross_partition_stats.json](experiments/analysis_hs2_5judges/cross_partition_stats.json).
+Pearson `r(accuracy, R̂*_iso) = −0.98`, p = 0.003 (Fisher-z 95% CI [-0.999, -0.761]). Since the underlying `(X, Y)` distribution is identical across judges, true `R*` is a single number; the 0.073 span reflects **rank-breaking** calibration differences that single-model isotonic cannot reconcile. Script: [plot.py](experiments/P2-ece-vs-rstar/plot.py). Raw data: [cross_partition_stats.json](experiments/analysis_hs2_5judges/cross_partition_stats.json), [stats_with_ci.json](experiments/P2-ece-vs-rstar/stats_with_ci.json).
+
+### Fig. 5 — Synthetic Bradley-Terry with known reward (theoretical anchor)
+
+![P3](experiments/P3-synthetic-bt/fig_synthetic_bt.png)
+
+Reward `r ~ N(0, 1)` on 100K responses; preferences via `P(A ≻ B) = σ(r_A - r_B)`. Closed-form `R*_pref = (1/2) − (1/2) E[|tanh(Δ/2)|] = 0.27455` (cross-verified against `E[min(σ(Δ), σ(-Δ))]` to 10⁻⁵). Across `N ∈ {100, …, 50000}` with 50 seeds each, the plug-in estimator is empirically unbiased (mean `R̂*` = 0.27455 ± 0.0005 at N = 50000), and `|R̂* - R*|` decays at log-log slope **−0.511** (theoretical −0.500, deviation 0.011). **Empirical verification of `O_P(N^{-1/2})` consistency under BT.** Script: [synthetic_bt_demo.py](experiments/P3-synthetic-bt/synthetic_bt_demo.py).
+
+### Fig. 6 — AB/BA self-consistency: aleatoric noise floor per judge
+
+![P4](experiments/P4-self-consistency/fig_self_consistency.png)
+
+For each judge we run both AB and BA prompt orderings and compute how often they disagree on the arg-max winner. This is a classifier-independent lower bound on aleatoric uncertainty:
+
+| Judge | disagreement rate [95% CI] | position bias |
+|---|---|---|
+| Granite-3.0-8B | 0.412 [0.382, 0.442] | +0.280 |
+| Qwen-2.5-7B | 0.434 [0.405, 0.463] | **−0.152** (prefers 2nd) |
+| Mistral-7B-v0.3 | 0.585 [0.556, 0.616] | +0.461 |
+| OLMo-7B-hf | 0.660 [0.630, 0.690] | +0.273 |
+| **Falcon-7B** | **0.954 [0.940, 0.966]** | +0.549 (near-total flip) |
+
+Disagreement rate correlates tightly with accuracy: strong judges give stable pass-to-pass decisions; weak judges are near coin-flips. This is the third channel (beyond miscalibration and data-side noise) through which `R̂*` picks up a capacity signal. Script: [analyze_ab_ba.py](experiments/P4-self-consistency/analyze_ab_ba.py).
+
+### Fig. 7 — Calibration methods showdown: all monotone calibrators preserve the confound
+
+![P5](experiments/P5-calibration-showdown/fig_calibration_showdown.png)
+
+Four post-hoc calibration methods fit via 5-fold CV; cross-judge Pearson `r(accuracy, R̂*_plug)` with Fisher-z 95% CI:
+
+| Method | r | Fisher-z 95% CI |
+|---|---|---|
+| raw | **−0.84** | [−0.989, +0.172] (CI crosses 0) |
+| Platt (2 params) | **−0.99** | [−0.999, −0.868] |
+| Temperature (1 param) | −0.98 | [−0.999, −0.691] |
+| **Isotonic (nonparametric)** | **−0.99** | [−0.999, −0.822] |
+| Beta (3 params, Kull 2017) | −0.94 | [−0.996, −0.306] |
+
+ECE is reduced 10-20× by every calibrator. But `r(accuracy, R̂*)` *strengthens* from −0.84 (raw, not significant) to ≤ −0.94 (calibrated). The capacity confound survives every monotone post-hoc calibrator; the Year-1 target must operate beyond this family. Script: [calibration_showdown.py](experiments/P5-calibration-showdown/calibration_showdown.py).
+
+### Fig. 8 — Per-judge reliability diagrams
+
+![P6](experiments/P6-reliability-diagrams/fig_reliability_diagrams.png)
+
+5×2 grid of reliability diagrams: raw (top row) and isotonic-CV (bottom row). Qwen/Mistral/Granite/OLMo exhibit typical modern-LLM overconfidence (raw ECE 0.13–0.22 collapsing to 0.04 post-isotonic). **Falcon is an informative edge case**: raw ECE = 0.02 because outputs concentrate near `p = 0.5` (no confident decisions); isotonic slightly *worsens* ECE to 0.034 by injecting step-wise artifacts. **Low ECE does not imply a good judge** — Falcon's 95% AB/BA disagreement (Fig. 6) and lowest accuracy (0.519) make this clear. Script: [reliability_diagrams.py](experiments/P6-reliability-diagrams/reliability_diagrams.py).
 
 ---
 
@@ -79,8 +124,9 @@ partitioned-bayes-rlhf/
 ├── LICENSE
 ├── .gitignore
 ├── src/
-│   ├── build_pairs.py                         HelpSteer2 pair construction
+│   ├── build_pairs.py                         HelpSteer2 + UltraFeedback pair construction
 │   ├── calibration_utils.py                   isotonic / temperature / ECE helpers
+│   ├── bootstrap_ci.py                        percentile bootstrap + Fisher-z CI
 │   ├── llm_judge_infer.py                     vLLM pairwise preference inference (AB/BA)
 │   ├── analyze_partitioned_rstar.py           cross-judge R*_plug / R*_iso + permutation test
 │   └── verify_params.py                       tokenizer / prompt-length sanity check
@@ -88,10 +134,15 @@ partitioned-bayes-rlhf/
 ├── run_all_judges.sh                          5 judges × single-GPU parallel launcher
 ├── download_models.sh                         fetch 5 judges from HuggingFace (via HF-Mirror)
 └── experiments/
-    ├── P0-synthetic-confounding/              2-Gaussian toy, V1–V4
-    ├── P1-human-partition/                    HelpSteer2-Preference strength analysis
-    ├── P2-ece-vs-rstar/                       5-judge cross-correlation plots
-    └── analysis_hs2_5judges/                  raw outputs of 5-judge pipeline
+    ├── P0-synthetic-confounding/              2-Gaussian toy, V1–V4 (Fig. 1, 3)
+    ├── P1-human-partition/                    HelpSteer2-Preference strength analysis (Fig. 2)
+    ├── P2-ece-vs-rstar/                       5-judge cross-correlation (Fig. 4)
+    ├── P3-synthetic-bt/                       BT with known reward + N-scaling (Fig. 5)
+    ├── P4-self-consistency/                   AB/BA aleatoric noise per judge (Fig. 6)
+    ├── P5-calibration-showdown/               4 calibrators × 5 judges (Fig. 7)
+    ├── P6-reliability-diagrams/               per-judge reliability plots (Fig. 8)
+    ├── analysis_hs2_5judges/                  raw outputs of 5-judge pipeline
+    └── judges_hs2/                            per-judge preference JSON (AB/BA)
 ```
 
 `data/` and `models/` are intentionally gitignored — download via `download_models.sh` and HuggingFace datasets (HelpSteer2) respectively. All figures and JSON metrics are versioned.

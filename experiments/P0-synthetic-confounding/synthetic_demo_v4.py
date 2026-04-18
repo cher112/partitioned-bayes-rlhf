@@ -190,26 +190,62 @@ print("\n=== Mean across T ===")
 for k, v in summary["mean_across_T"].items():
     print(f"  {k:>14}: {v:.4f}")
 
-# --- plot ---
-fig, ax = plt.subplots(figsize=(9, 5.5))
+# --- plot : dual-panel (full range + zoom) ---
 x_axis = np.array(temps)
-
-ax.plot(x_axis, r_raw_a, "o-", ms=8, lw=2, color="#c53030", label=f"Plug-in $\\hat{{R}}^*_{{raw}}$  (span={span(r_raw_a):.3f})")
-ax.plot(x_axis, r_err_a, "s-", ms=8, lw=2, color="#38a169", label=f"Error rate $1-\\mathrm{{acc}}$  (span={span(r_err_a):.3f})")
-ax.plot(x_axis, r_iso_a, "^-", ms=8, lw=2, color="#2b6cb0", label=f"Isotonic $\\hat{{R}}^*_{{iso}}$  (span={span(r_iso_a):.3f})")
-ax.plot(x_axis, r_ca_a,  "d-", ms=9, lw=2, color="#6b46c1", label=f"Margin-CA $\\hat{{R}}^*_{{CA}}$  (span={span(r_ca_a):.3f})")
-ax.axhline(true_rstar, color="black", ls="--", alpha=0.6, label=f"True $R^* = {true_rstar:.3f}$")
-ax.set_xscale("log")
-ax.set_xlabel("Temperature T (log scale)")
-ax.set_ylabel(r"$\hat{R}^*$ estimate")
-ax.set_title(
-    "P0 V4: Corrected estimators stay pinned to true $R^*$ while plug-in collapses\n"
-    "(Same trained MLP, 10 temperatures, same accuracy 0.836 across all T)"
+fig, (ax1, ax2) = plt.subplots(
+    1, 2, figsize=(14, 5.3), gridspec_kw={"width_ratios": [1.35, 1]}
 )
-ax.legend(loc="center left", bbox_to_anchor=(1.01, 0.5))
-ax.grid(True, alpha=0.3)
+
+# Panel A: full range — plug-in collapse dominates the y-range
+ax1.plot(x_axis, r_raw_a, "o-", ms=8, lw=2.2, color="#c53030",
+         label=f"Plug-in $\\hat{{R}}^*_{{raw}}$  (span={span(r_raw_a):.3f})")
+ax1.plot(x_axis, r_err_a, "s-", ms=7, lw=1.5, color="#38a169", alpha=0.75,
+         label=f"1 − acc  (span={span(r_err_a):.3f})")
+ax1.plot(x_axis, r_iso_a, "^-", ms=7, lw=1.5, color="#2b6cb0", alpha=0.75,
+         label=f"Isotonic $\\hat{{R}}^*_{{iso}}$  (span={span(r_iso_a):.3f})")
+ax1.plot(x_axis, r_ca_a,  "d--", ms=7, lw=1.5, color="#6b46c1", alpha=0.75,
+         label=f"Margin-CA $\\hat{{R}}^*_{{CA}}$  (span={span(r_ca_a):.3f})")
+ax1.axhline(true_rstar, color="black", ls=":", lw=1.3, alpha=0.7,
+            label=f"True $R^* = {true_rstar:.3f}$")
+ax1.axhspan(0.150, 0.170, color="gray", alpha=0.10, zorder=-1)
+ax1.set_xscale("log")
+ax1.set_xlabel("Temperature T (log scale)")
+ax1.set_ylabel(r"$\hat{R}^*$ estimate")
+ax1.set_title("A. Full range — plug-in collapses 23× (shaded = Panel B zoom)")
+ax1.legend(loc="upper left", fontsize=9.5)
+ax1.grid(True, alpha=0.3)
+
+# Panel B: zoom [0.150, 0.170] — only the 3 corrected estimators
+ax2.plot(x_axis, r_err_a, "s-", ms=9, lw=1.8, color="#38a169",
+         label=f"1 − acc  (mean {r_err_a.mean():.4f})",
+         markerfacecolor="none", markeredgewidth=1.8)
+ax2.plot(x_axis, r_iso_a, "^-", ms=9, lw=1.8, color="#2b6cb0",
+         label=f"Isotonic $\\hat{{R}}^*_{{iso}}$  (mean {r_iso_a.mean():.4f})",
+         markerfacecolor="white", markeredgewidth=1.8)
+ax2.plot(x_axis, r_ca_a,  "d--", ms=8, lw=1.8, color="#6b46c1",
+         label=f"Margin-CA $\\hat{{R}}^*_{{CA}}$  (mean {r_ca_a.mean():.4f})",
+         markerfacecolor="#6b46c1", alpha=0.85)
+ax2.axhline(true_rstar, color="black", ls=":", lw=1.5,
+            label=f"True $R^* = {true_rstar:.3f}$")
+ax2.set_xscale("log")
+ax2.set_ylim(0.150, 0.170)
+ax2.set_xlabel("Temperature T (log scale)")
+ax2.set_ylabel(r"$\hat{R}^*$ (zoomed)")
+ax2.set_title("B. Zoom [0.150, 0.170] — corrected estimators\nstay within ±0.004 of true R*")
+ax2.legend(loc="lower right", fontsize=9.5)
+ax2.grid(True, alpha=0.3)
+ax2.text(0.5, 0.935,
+         "Isotonic & Margin-CA are\nmathematically equivalent\nin the monotone-coupled regime",
+         transform=ax2.transAxes, fontsize=8.5, ha="center", va="top",
+         bbox=dict(boxstyle="round,pad=0.4", fc="#f7fafc", ec="gray", lw=0.5))
+
+fig.suptitle(
+    "P0 V4 — Corrected estimators pin true R* across 23× plug-in collapse "
+    "(same MLP, 10 temperatures, accuracy 0.836 throughout)",
+    fontsize=12, y=1.01,
+)
 fig.tight_layout()
-fig.savefig(HERE / "fig_synthetic_rstar_v4.png", dpi=150, bbox_inches="tight")
+fig.savefig(HERE / "fig_synthetic_rstar_v4.png", dpi=160, bbox_inches="tight")
 
 with open(HERE / "results_v4.json", "w") as f:
     json.dump(summary, f, indent=2)

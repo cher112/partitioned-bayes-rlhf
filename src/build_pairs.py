@@ -26,41 +26,64 @@ os.environ.setdefault("HF_DATASETS_OFFLINE", "1")
 from datasets import load_dataset
 
 
-def build_ultrafeedback(n):
-    ds = load_dataset("HuggingFaceH4/ultrafeedback_binarized", split="train_prefs")
-    print(f"[UF] loaded {len(ds)} samples")
+def build_ultrafeedback(n, uf_dir=None, min_score_gap=2.0):
+    """Build preference pairs from raw openbmb/UltraFeedback jsonl files.
+
+    For each instruction (=prompt), pair its highest-`overall_score` completion (chosen)
+    with its lowest (rejected), provided the gap is >= `min_score_gap`. Randomize A/B
+    assignment.
+
+    `uf_dir` is the directory holding {evol_instruct, false_qa, flan, sharegpt,
+    truthful_qa, ultrachat}.jsonl (as downloaded from HF openbmb/UltraFeedback).
+    """
+    import glob, pathlib
+    if uf_dir is None:
+        uf_dir = "/autodl-fs/data/partitioned-bayes-rlhf/data/uf"
+    files = sorted(glob.glob(f"{uf_dir}/*.jsonl"))
+    if not files:
+        raise FileNotFoundError(f"No jsonl in {uf_dir}; run download_uf first")
+    print(f"[UF] reading {len(files)} subsets under {uf_dir}")
+
+    rows = []
+    for fp in files:
+        subset = pathlib.Path(fp).stem
+        with open(fp) as f:
+            for line in f:
+                rows.append((subset, json.loads(line)))
+    print(f"[UF] loaded {len(rows)} instructions total")
+
     out = []
     rng = random.Random(42)
-    idxs = list(range(len(ds)))
-    rng.shuffle(idxs)
-    for k, i in enumerate(idxs[:n]):
-        s = ds[i]
-        prompt = s["prompt"]
-        chosen = s["chosen"]
-        rejected = s["rejected"]
-        # chosen/rejected are multi-turn; take last assistant message
-        def last_assistant(msgs):
-            for m in reversed(msgs):
-                if m.get("role") == "assistant":
-                    return m.get("content", "")
-            return ""
-        chosen_text = last_assistant(chosen) if isinstance(chosen, list) else str(chosen)
-        rejected_text = last_assistant(rejected) if isinstance(rejected, list) else str(rejected)
-        if not chosen_text or not rejected_text:
+    rng.shuffle(rows)
+    k = 0
+    for subset, ex in rows:
+        comps = [c for c in ex.get("completions", [])
+                 if c.get("response") and c.get("overall_score") is not None]
+        if len(comps) < 2:
             continue
-        # Randomize A/B assignment per pair; record gold
+        comps_sorted = sorted(comps, key=lambda c: float(c["overall_score"]))
+        lo, hi = comps_sorted[0], comps_sorted[-1]
+        if float(hi["overall_score"]) - float(lo["overall_score"]) < min_score_gap:
+            continue
+        chosen_text = hi["response"]
+        rejected_text = lo["response"]
         if rng.random() < 0.5:
             resp_a, resp_b, gold = chosen_text, rejected_text, 1
         else:
             resp_a, resp_b, gold = rejected_text, chosen_text, 0
         out.append({
             "id": f"uf_{k:05d}",
-            "prompt": prompt,
+            "prompt": ex["instruction"],
             "response_a": resp_a,
             "response_b": resp_b,
             "gold_label": gold,
-            "source": "ultrafeedback",
+            "source": f"ultrafeedback/{subset}",
+            "score_gap": float(hi["overall_score"]) - float(lo["overall_score"]),
         })
+        k += 1
+        if k >= n:
+            break
+    print(f"[UF] built {len(out)} pairs  (score_gap >= {min_score_gap})")
     return out
 
 
