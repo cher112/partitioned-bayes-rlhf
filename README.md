@@ -8,97 +8,104 @@
 
 ## The Idea
 
-Ishida et al. (ICLR 2023 oral) proposed an instance-free estimator of the binary
-Bayes error, `R* = E[min(η, 1-η)]`, from soft labels. In RLHF these soft labels
-are routinely obtained from LLM judges — but judges are systematically
-miscalibrated, and we find that plugging them into Ishida's estimator yields
-values dominated by judge **capacity**, not by data-side noise. We extend the
-estimator to Bradley-Terry preference, formalize the capacity confound via an
-exact **margin-gap identity** `E[R̂*] − R* = −E[|η̂−½| − |η−½|]`, and build a
-calibration-aware estimator `R̂*_CA` that pins the true `R*` within 0.001
-across a 23× plug-in swing on synthetic data (Fig. 3).
+Evaluating RLHF preference data is a diagnosis problem: how much of the
+disagreement we see is *irreducible annotator noise* versus *reducible
+classifier error*? **Ishida et al.** (ICLR 2023 oral) gave an instance-free
+Bayes error estimator `R̂* = (1/N) Σ min(c_i, 1−c_i)` from soft labels —
+exactly the kind of diagnostic we need. But in RLHF the soft labels come from
+**LLM judges**, which are systematically miscalibrated
+([Guo 2017](https://arxiv.org/abs/1706.04599)); naively plugging them in yields
+estimates dominated by judge **capacity**, not data-side noise. The
+calibration fix [Ushio et al. ICLR 2026] proposes — isotonic on corrupted
+soft labels — preserves the confound in the multi-judge regime (C8). The
+preference half of the problem is Bradley–Terry (1952) / Plackett-Luce;
+modern DPO ([Rafailov 2023](https://arxiv.org/abs/2305.18290)) inherits its
+noise assumptions. Yin & Ishida (ICLR 2026)'s partitioned scalable-oversight
+framework gives the natural language for "expert-domain partitions" as an
+intermediate between per-instance and population-level diagnostics.
+(Author background: M.S. thesis on irregular-time-series classification
+under class imbalance via Neural LNSDE + continuous-time Transformer on
+MACHO / LINEAR / ASAS / PhysioNet. The transferable angle is experience
+with *noise-robust diagnostics on imbalanced, irregularly-observed data* —
+which the tie-heavy, annotator-partitioned RLHF setting demands. We do
+**not** claim a formal isomorphism.) This repo is the preliminary evidence that
+the confound is real, the partitioned structure is recoverable, and a
+**calibration-aware preference Bayes-error estimator `R̂*_CA`** is a feasible
+Year-1 theoretical target.
 
-## Contributions
+## Contributions (preliminary)
 
-Confirmed (experiments in this repo):
+**Empirical diagnostics** (strong, replicated):
+- **C1** 6 judges (Falcon / OLMo / Mistral / Qwen / Granite / Llama-3) ×
+  HelpSteer2: `r(acc, R̂*_iso) = −0.97`, Fisher-z CI [−0.996, −0.719] — capacity
+  confound is real (Fig. 4).
+- **C6** UltraFeedback cross-dataset replication: `r = −0.999`, CI
+  [−0.9999, −0.993] — confound is not HS2-specific (Fig. 9).
+- **C3** HelpSteer2-Pref 9125 × 3 annotators: per-annotator error rate
+  spans 3.3× by `|strength|` bin, CIs disjoint, classifier-free (Fig. 2).
+- **C5** AB/BA self-consistency spans 41% (Granite) → 95% (Falcon);
+  aleatoric floor tracks judge weakness (Fig. 6).
 
-- ✅ **C1 — Capacity confound is real on LLM judges.** Six open-source 7B/8B
-  judges (Falcon, OLMo, Mistral, Qwen2.5, Granite-3.0, Llama-3-8B) on
-  HelpSteer2 show `r(accuracy, R̂*_iso) = −0.97`, Fisher-z 95% CI
-  [−0.996, −0.719], `p = 0.002` (Fig. 4).
-- ✅ **C2 — Monotone post-hoc calibration is insufficient.** Platt / Temperature
-  / Isotonic / Beta all *preserve* the confound (`r ≤ −0.94`) while reducing
-  ECE by 10–20× (Fig. 7).
-- ✅ **C3 — Annotator-disagreement heterogeneity is real and classifier-free.**
-  Across 9125 HelpSteer2-Preference pairs × 3 annotators, per-annotator error
-  rate spans 3.3× by `|strength|` bin (CIs disjoint), computed with no
-  classifier (Fig. 2). This is a *proxy* for partition-conditional `R*|A_k`.
-- ✅ **C4 — Corrected estimator recovers true `R*` in the monotone regime.**
-  `R̂*_CA` stays within 0.001 of analytic `R* = 0.159` across 10 temperatures
-  (Fig. 3); synthetic BT verifies the `O_P(N^{-1/2})` rate (Fig. 5).
-- ✅ **C5 — Aleatoric noise floors scale with judge weakness.** AB/BA self-
-  disagreement spans 41% (Granite) to 95% (Falcon), tightly tracking judge
-  accuracy (Fig. 6).
+**Synthetic theoretical anchors**:
+- **C4** On a 2-Gaussian toy with known `R* = 0.159`, `R̂*_CA` pins the truth
+  within 0.001 across a 23× plug-in swing (Fig. 3).
+- **C2** Platt / Temperature / Isotonic / Beta all *preserve* the confound
+  (`r ≤ −0.94`) despite 10–20× ECE reduction — monotone calibration is
+  structurally insufficient (Fig. 7).
 
-Just completed (2026-04-18):
-
-- ✅ **C6 — UltraFeedback 1000 pairs × 6 judges reproduces the confound.**
-  `r(accuracy, R̂*_iso) = −0.999`, Fisher-z 95% CI [−0.9999, −0.993],
-  `p < 10⁻⁴` (Fig. 9). Dynamic range is 3.4× on UF vs 1.2× on HS2 (score-gap
-  filter keeps easy pairs, widening the confound).
-- ✅ **C7 — Llama-3-8B replicates the P0 V3 synthetic temperature-scaling
-  finding on real HS2 data.** Scanning softmax `T ∈ {0.1, …, 5.0}` on the
-  same 1000 Llama-3 judgments: accuracy flat at 0.586, plug-in `R̂*` swings
-  `0.018 → 0.375` (**21× span**), isotonic `R̂*` span **0.0008**.
-  `r(signed_bias, plug-gap) = −0.908`, p = 2.9e-4 (Fig. 10). The toy-to-real
-  gap is closed: the capacity confound is a property of real LLM soft-labels,
-  not a synthetic artefact.
-
-- ✅ **C8 — Isotonic's reliability is dataset-dependent; this is the
-  limitation `R̂*_CA` exists to fix.** Across HS2 and UF 6-judge data we
-  compare three Bayes-error proxies (1−acc, plug-in, iso). On HS2,
-  isotonic calibration reduces the cross-judge R̂* range 3× (plug-in 0.26
-  → iso 0.08). On UF the same isotonic transform barely narrows the range
-  (0.35 → 0.34) and Spearman(iso R̂*, accuracy) = **−0.986**, i.e. iso
-  degenerates to a monotone proxy of `(1 − accuracy)`. Any single-judge
-  monotone calibrator is therefore insufficient in the multi-judge /
-  multi-dataset regime — directly motivating the margin-matching
+**Observational findings** (interpret with care — explicit caveats):
+- **C7** Llama-3 conditional-preference temperature scan: plug-in `R̂*` swings
+  21× while accuracy is flat; `r(signed_bias, gap) = −0.908`. Equivalent to
+  full-vocab T-scaling on the A∨B-conditional distribution (partition
+  function cancels). The ~9% residual vs. synthetic `r = −1.00` is itself
+  a real-world finding, *not* perfect replication (Fig. 10).
+- **C8** Isotonic's confound-removal is **dataset-dependent**: reduces the
+  cross-judge R̂* range 3× on HS2 but collapses to `1 − accuracy` on UF
+  (Spearman = −0.986). This is the limitation that motivates margin-matching
   `R̂*_CA` (Fig. 11).
-- ✅ **C9 — Joint (isotonic-refit + plug-in) sample complexity has
-  empirical slope −0.750, steeper than the CLT reference −0.500.**
-  Per-subsample isotonic refit + plug-in R̂*, subsampling without
-  replacement at N ∈ {100…800}, 100 seeds × 6 judges: log-log slope =
-  **−0.750** (R² = 0.968). The non-CLT rate is a genuine finding — it
-  reflects the bias-variance coupling between the calibrator fit and
-  the plug-in estimator, motivating `R̂*_CA`'s joint analysis rather
-  than a two-stage pipeline (Fig. 12).
-  *(NB: an earlier version of this experiment used a fixed calibrator
-  fit on the full dataset and reported slope −0.500. That result merely
-  verifies CLT for the sample-mean `R̂*`, not the estimator's statistical
-  property under calibrator refitting — the current script corrects
-  this.)*
+- **C9** Per-subsample isotonic refit on HS2 gives log-log slope −0.750 (R² =
+  0.968). This is empirical, not a formal rate — an earlier fixed-calibrator
+  version trivially verified the CLT (−0.500) and has been corrected (Fig. 12).
+- **C10** HS2 ↔ UF 6-judge ranking consistency: Spearman 0.77 (N=6). The
+  two datasets differ in both covariate and concept shift (human-majority
+  vs. GPT-4 score-gap gold), so this is a ranking-stability check, not a
+  clean OOD-transfer test (Fig. 13).
 
-- ✅ **C10 — 6-judge ranking is consistent across HS2 and UF despite
-  different gold definitions.** Spearman(R̂*_iso on HS2, R̂*_iso on UF) =
-  **+0.77** (N=6, small-sample caveat), Pearson `r = 0.89`, Fisher-z CI
-  [0.30, 0.99] (Fig. 13). Weaker than a full OOD-transfer claim (which
-  would confound covariate and concept shift) but still positive
-  evidence that judge-level uncertainty signal has cross-dataset
-  stability.
+## Year-1 / Year-2 Research Plan
 
-In flight (Week 2):
+**Year 1 — theory + estimator**
+- **Finite-sample bias bound for `R̂*_CA` under BT.** Extend the plug-in bounds
+  of [Nguyen 2005], [Niu et al. 2013] and the isotonic rate of Ushio et al.
+  (ICLR 2026) to joint-analysis form: target
+  `|R̂*_CA − R*| = O_P(M^{−1/3}) + O_P(N^{−1/2})`, with M = calibrator-fit size,
+  N = estimator sample size. C9's −0.750 is the empirical breadcrumb.
+- **Calibration-free preference R̂\*.** Avoid isotonic altogether (C8 shows
+  why). Candidate: k-NN density-ratio estimator on logit gaps, or a
+  transition-matrix formulation borrowed from [Patrini et al. 2017]
+  forward-correction.
+- **Bradley-Terry–native Bayes error.** Close-form `R̂*_pref = 1/2 −
+  (1/2)E[|tanh(Δ/2)|]` is our P3 anchor; extend to Plackett-Luce (`K ≥ 2`
+  responses) and group-wise tournaments.
+- **LLM-judge failure-mode taxonomy.** Formalize "low-ECE ≠ good judge"
+  (Falcon edge case, C5 / P6) into a 4-quadrant diagnostic. Ties to
+  [Zheng 2023] (MT-Bench), [Dubois 2024] (AlpacaEval LC), position-bias
+  literature.
 
-- 🔄 **Per-judge failure-mode narrative** (M5) — turn the P4/P5/P6
-  results into a 1-paragraph story "Falcon low ECE ≠ good judge" for
-  the proposal.
-
-Planned (Year-1 / Year-2 of the proposal):
-
-- 📋 **Formal theorem**: `|R̂*_CA − R*| = O_P(M^{-1/3}) + O_P(N^{-1/2})` under
-  BT assumption and monotone-coupled calibration (Year-1).
-- 📋 **IW-DPO with partition weights derived from `R̂*_CA`** — Year-2 D4.
-- 📋 **Complementary-label preference learning** (Ishida 2017 lineage × Yin
-  2026 scalable oversight) — Year-2 D6.
+**Year 2 — downstream applications**
+- **IW-DPO with `R̂*_CA` partition weights** (lineage:
+  [Rafailov 2023] DPO + [Lodkaew et al. 2025] TMLR importance-weighted DPO).
+  Hypothesis: down-weighting high-`R̂*` partitions improves AlpacaEval LC by
+  ≥1.5pp vs. uniform DPO.
+- **Complementary-label preference learning** — fuse [Ishida 2017] cL lineage
+  with Yin & Ishida (ICLR 2026) scalable oversight: model "A is *not*
+  worse than B" as a weak-supervision signal for tie-heavy partitions.
+- **Cross-lingual preference drift.** HelpSteer2 EN + OASST multilingual +
+  Japanese RLHF corpora; language as partition, R̂*_CA as the drift metric.
+- **Online reward-hacking detection** via R̂*_CA drift during PPO updates
+  (feasibility hedge: requires a smoothing estimator tolerant to the
+  irregular-update schedule; candidate approach is a sequential CUSUM-style
+  test on partition-level R̂*_CA, as cheap as a few-hundred-pair
+  re-estimate per checkpoint).
 
 ## Claim-evidence map
 
