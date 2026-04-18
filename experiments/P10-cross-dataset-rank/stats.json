@@ -1,0 +1,32 @@
+{
+  "rstar_iso": {
+    "spearman": {
+      "rho": 0.7714285714285715,
+      "p": 0.07239650145772594
+    },
+    "pearson": {
+      "r": 0.8933532707362337,
+      "p": 0.016453812680587238,
+      "fisher_z_ci_95": [
+        0.2974372400102559,
+        0.9883500022806694
+      ]
+    }
+  },
+  "accuracy": {
+    "spearman": {
+      "rho": 0.823529411764706,
+      "p": 0.043964990840626925
+    },
+    "pearson": {
+      "r": 0.9687452926164608,
+      "p": 0.0014500194147633557,
+      "fisher_z_ci_95": [
+        0.7351786579442153,
+        0.9967027154101601
+      ]
+    }
+  },
+  "n_judges": 6,
+  "caveat": "HS2 gold = human-majority helpfulness; UF gold = overall_score gap >= 2 (GPT-4 scores). This tests ranking CONSISTENCY under both covariate and concept shift \u2014 not a clean OOD-calibrator transfer. N=6 small-sample Spearman; CI reported via Fisher-z for Pearson."
+}
