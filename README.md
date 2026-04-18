@@ -58,10 +58,13 @@ Just completed (2026-04-18):
   with accuracy; on UF, iso barely narrows (0.35 → 0.34). This motivates the
   Year-1 `R̂*_CA` estimator, which must operate beyond monotone calibration
   (Fig. 11).
+- ✅ **C9 — `O_P(N^{-1/2})` rate holds on real HS2 data, exact match to theory.**
+  Bootstrap R̂*_iso at N ∈ {100…5000}, 100 seeds × 6 judges: log-log slope =
+  **−0.500** (theoretical −0.500, R² = 0.998). The synthetic-BT P3 rate carries
+  over to real LLM-judge soft labels (Fig. 12).
 
 In flight:
 
-- 🔄 **HS2 real-data sample complexity curve** (Week 2).
 - 🔄 **OOD transfer (HS2 → UF)** for margin-matching parameters (Week 2).
 
 Planned (Year-1 / Year-2 of the proposal):
@@ -84,6 +87,7 @@ Planned (Year-1 / Year-2 of the proposal):
 | C6 | Confound is not HelpSteer2-specific | [Fig. 9](experiments/analysis_uf_6judges/fig_rstar_partition.png) + [stats_with_ci.json](experiments/analysis_uf_6judges/stats_with_ci.json) | UltraFeedback N=6 judges; `r = −0.999`, Fisher-z CI [−0.9999, −0.993], `p < 10⁻⁴` |
 | C7 | Toy temperature-scaling story replicates on real LLM | [Fig. 10](experiments/P7-llama3-tempscan/fig_tempscan.png) + [stats.json](experiments/P7-llama3-tempscan/stats.json) | Llama-3-8B, 10 T values: plug-in `R̂*` span 0.358, iso span 0.0008; `r(signed_bias, gap) = −0.908`, p = 2.9e-4 |
 | C8 | Simpler baselines (1−acc, plug-in) do not converge to a data-side quantity across 6 judges | [Fig. 11](experiments/P8-baselines/fig_baselines.png) + [stats.json](experiments/P8-baselines/stats.json) | HS2: iso range 0.084 (3× below plug-in 0.258), Spearman(iso, acc) = −0.928; UF: iso range 0.337 vs acc range 0.366 |
+| C9 | `O_P(N^{-1/2})` rate holds on real HS2 (not only synthetic BT) | [Fig. 12](experiments/P9-hs2-sample-complexity/fig_sample_complexity.png) + [stats.json](experiments/P9-hs2-sample-complexity/stats.json) | Log-log slope = **−0.500** (theory −0.500), R² = 0.998, 100 bootstrap seeds × 6 judges |
 
 ---
 
