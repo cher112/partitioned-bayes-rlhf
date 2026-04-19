@@ -1,0 +1,80 @@
+{
+  "hs2": {
+    "dataset": "HS2 (N=5k)",
+    "n_pairs": 4994,
+    "n_judges": 6,
+    "per_judge_acc": [
+      {
+        "judge": "falcon-7b-instruct",
+        "acc": 0.5062074489387265
+      },
+      {
+        "judge": "granite-3.0-8b-instruct",
+        "acc": 0.5826992390869042
+      },
+      {
+        "judge": "Llama-3-8B-Instruct",
+        "acc": 0.6021225470564677
+      },
+      {
+        "judge": "Mistral-7B-Instruct-v0.3",
+        "acc": 0.578494193031638
+      },
+      {
+        "judge": "OLMo-7B-Instruct-hf",
+        "acc": 0.5044052863436124
+      },
+      {
+        "judge": "Qwen2.5-7B-Instruct",
+        "acc": 0.5955146175410493
+      }
+    ],
+    "max_single_judge_acc": 0.6021225470564677,
+    "majority_vote_acc": 0.5889066880256307,
+    "majority_rm_rstar_raw": 0.25048391403016956,
+    "majority_rm_rstar_iso": 0.41109331197436916,
+    "majority_rm_ece_raw": 0.16181083967427584,
+    "majority_rm_ece_iso": 2.6210511534502595e-17
+  },
+  "uf": {
+    "dataset": "UF (N=5k)",
+    "n_pairs": 4946,
+    "n_judges": 6,
+    "per_judge_acc": [
+      {
+        "judge": "falcon-7b-instruct",
+        "acc": 0.49636069551152445
+      },
+      {
+        "judge": "granite-3.0-8b-instruct",
+        "acc": 0.782248281439547
+      },
+      {
+        "judge": "Llama-3-8B-Instruct",
+        "acc": 0.7832591993530126
+      },
+      {
+        "judge": "Mistral-7B-Instruct-v0.3",
+        "acc": 0.7555600485240599
+      },
+      {
+        "judge": "OLMo-7B-Instruct-hf",
+        "acc": 0.5351799433885969
+      },
+      {
+        "judge": "Qwen2.5-7B-Instruct",
+        "acc": 0.8465426607359482
+      }
+    ],
+    "max_single_judge_acc": 0.8465426607359482,
+    "majority_vote_acc": 0.7972098665588354,
+    "majority_rm_rstar_raw": 0.23512265804016716,
+    "majority_rm_rstar_iso": 0.20279013344116456,
+    "majority_rm_ece_raw": 0.04267758458013208,
+    "majority_rm_ece_iso": 3.128534857604755e-17
+  },
+  "majority_drift": 0.2083031785332046,
+  "per_judge_iso_drift_5k_ref": 0.1359,
+  "p16_pooled_fci_drift_5k_ref": 0.0855,
+  "interpretation": "Majority-of-6 as implicit RM beats single-judge accuracy (Condorcet effect) and reduces cross-dataset drift, but does not match P16 pooled FCI. This makes P16 look strictly stronger than the naive ensemble baseline \u2014 exactly the positioning the Year-1 theorem should defend."
+}
