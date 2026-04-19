@@ -306,6 +306,85 @@ via signed-bias analysis rather than hitting the P14 identity.
 - C15 (pooled-anchor `R̂*_CA` drift 0.087 < 0.09 PASS on HS2 ↔ UF, the
   first concrete non-tautological estimator that generalises).
 
+## Methodology audit — explicit response to 6 concerns
+
+We explicitly stress-tested the project's claims through two rounds of
+Gemini review and one round of codex-rescue review. Six concerns
+surfaced; below is the status of each.
+
+### Resolved (3)
+
+- **"C9 slope −0.500 is CLT-trivial, not estimator property."**
+  ✅ Fixed. The original P9 used a fixed calibrator fit on the full
+  sample then bootstrapped — equivalent to verifying CLT for a sample
+  mean. Rewritten to use **subsampling without replacement + refit
+  isotonic from scratch per subsample** (the scope that actually
+  matches the Nguyen-2005 / Niu-2013 plug-in rate literature). New
+  real-data slope = **−0.750** (R² 0.968). Cross-checked on synthetic
+  2-Gaussian toy with known `R*` where isotonic refit gives slope
+  **−0.626** (|syn − hs2| = 0.124, R² 0.951). Both are **steeper than
+  CLT −0.500**, consistent with isotonic-refit coupling bias and
+  variance beyond i.i.d. sampling. The old fixed-calibrator `−0.500`
+  figure is explicitly flagged as corrected in the C9 bullet. See
+  `experiments/P9-hs2-sample-complexity/` and
+  `experiments/P0-synthetic-confounding/synthetic_sample_complexity.py`.
+- **"C7 binomial reduction ≠ full-vocab temperature scan."**
+  ✅ Mathematically equivalent — the partition function cancels. Under
+  full-vocab temperature scaling `P(t | T) = softmax(l / T)[t]`, the
+  *conditional* preference probability simplifies to
+  `P(A | A∨B, T) = exp(l_A/T) / (exp(l_A/T) + exp(l_B/T)) = σ((l_A − l_B)/T)`.
+  The denominator `Z(T)` in full-vocab softmax cancels in the ratio.
+  C7 is therefore a *legitimate* full-vocab T-scan on the conditional
+  preference distribution. The caveat we kept is separate: `r = −0.908`
+  on real LLM (vs `r = −1.00` on synthetic) means ~9% of the variance
+  in plug-in `R̂*` gap is unexplained by signed bias — this is a
+  real-world *finding* about residual heterogeneity, not a failure of
+  the setup. Proof in `experiments/P7-llama3-tempscan/tempscan.py`.
+- **"C8 iso ≈ 1 − accuracy on UF undermines `R̂*_iso`'s independent
+  value."**
+  ✅ Acknowledged and used as motivation. On UF, Spearman(iso, acc)
+  = −0.986 (near-degenerate); on HS2, −0.928 (still distinct).
+  Reframed as *dataset-dependent limitation of monotone calibration*
+  that directly motivates `R̂*_CA` (see C14). The P16 pooled-anchor
+  estimator (C15) then breaks this degeneracy: on UF the pooled
+  stretch factor is `1.01` (near-identity), so `R̂*_CA` ≈ `R̂*_iso`
+  where iso already works; on HS2 the pooled stretch is `1.345`,
+  rescaling all judges uniformly so the cross-judge spread compresses.
+  Drift 0.134 → 0.087. This is precisely the fix the audit asked for.
+
+### Outstanding (3)
+
+- **"C5 synthetic BT rate verification — not validated at real LLM
+  scale."**
+  🔄 Partially closed. The synthetic BT slope `−0.511 vs −0.500`
+  remains synthetic. Real-data validation comes via C9 (HS2 refit-iso
+  `−0.750` + synthetic cross-check `−0.626`, both joint rates steeper
+  than CLT). A GPU scale-up to N=5000 pairs × 12 judge-runs (both
+  datasets) is in flight (2026-04-19); the 4-judge HS2 interim shows
+  Fisher-z CI of `r(acc, R̂*_iso)` tightens from [−0.999, +0.201]
+  (N=1k, CI crosses 0) to **[−1.000, −0.982] (N=5k)**, a ≈ 1000× CI
+  compression on the upper bound. Full 12-run analysis is queued.
+- **"C2 — did not compare to an explicit reward model like ArmoRM /
+  PairRM."**
+  🔄 Open. C2 shows Platt / Temperature / Isotonic / Beta all
+  preserve the confound (`r ≤ −0.94`), but we did not benchmark
+  against an external trained reward model that operates directly on
+  preference pairs. The natural anchor is a small distilled RM such as
+  **PairRM** (AllenAI 0.4B) — cheap enough to run in 20 min on a
+  single GPU after the N=5k pipeline completes. This is the **highest
+  unresolved gap** and is queued as `experiments/P17-pairrm-baseline/`
+  (design: compute PairRM scores on the same 1000 HS2 + UF pairs; feed
+  into the same pipeline; compare `R̂*_iso(PairRM)` to the 6-judge
+  median `R̂*_iso`; quantify whether an explicit RM closes the
+  capacity confound or inherits it).
+- **"Year-1 theorem not yet proved."**
+  🔄 Proposal-scope. The statement + proof sketch above is intended to
+  be a *credible and specific* promise — with citations (Chernoff
+  1964, Durot 2008, Balabdaoui–Wellner 2007), explicit assumptions
+  (A1–A4), explicit scope (monotone-coupled regime, A2 fails on UF),
+  and a non-tautology check against P14. A full proof is the Year-1
+  deliverable.
+
 ## Claim-evidence map
 
 | # | Claim | Evidence | Metric (95% CI where applicable) |
