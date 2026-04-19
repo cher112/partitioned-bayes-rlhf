@@ -149,8 +149,20 @@ observed data; no formal isomorphism is claimed.*
   [Raykar et al. 2010](https://www.jmlr.org/papers/v11/raykar10a.html)
   lineage). This establishes the **minimum-viable-aggregator baseline
   Year-1 margin-matching must beat** (Fig. 17).
-- **C14** **FCI-Risk: partial proof-of-concept + constructive
-  counterexample.** To replace the tautological P0 V4 `R̂*_CA` formula
+- **C15** **Pooled-anchor FCI: first real-data estimator with
+  cross-dataset drift under the 0.09 PASS target.** Global-pooled
+  quantile anchors (concat all 6 judges' `c_iso`, compute one shared
+  `ρ_0, ρ_1` from the pooled q01/q99) close the P15 HS2 counterexample
+  without introducing the circular "strongest-judge" argument Gemini
+  rejected. Cross-dataset drift collapses from **0.134 (iso) → 0.087
+  (pooled FCI)**, a 35% reduction; `R̂*_CA` means are HS2 0.376 vs UF
+  0.272 (spread 0.10 vs single-judge iso's 0.13). std-ratio stays ≈ 1
+  on both datasets (1.105 HS2 / 0.997 UF) — pooled anchor neither
+  collapses variance nor inflates it. **This is the preliminary
+  empirical anchor for the Year-1 finite-sample bound theorem** (see
+  Theorem statement below, Fig. 19).
+- **C14** **FCI-Risk (per-judge): partial proof-of-concept +
+  constructive counterexample.** To replace the tautological P0 V4 `R̂*_CA` formula
   (P14), we implemented a Forward-Corrected Isotonic estimator inspired
   by [Patrini et al. 2017](https://openaccess.thecvf.com/content_cvpr_2017/html/Patrini_Making_Deep_Neural_CVPR_2017_paper.html)
   forward-correction and [Liu & Tao 2015](https://ieeexplore.ieee.org/document/7159100)
@@ -204,6 +216,96 @@ observed data; no formal isomorphism is claimed.*
   test on partition-level R̂*_CA, as cheap as a few-hundred-pair
   re-estimate per checkpoint).
 
+## Year-1 target theorem · statement + proof sketch
+
+**Theorem (Year-1 deliverable — statement).**
+Fix a Bradley-Terry preference distribution with true Bayes error `R*`.
+Let `{c_iso_k(x)}_{k=1..K}` be `K` isotonically-calibrated LLM-judge
+scores obtained from independent rankings of `N` preference pairs.
+Define the **pooled-anchor calibration-aware estimator** as
+
+```
+    C_pool        = { c_iso_k(x_i) : k ∈ [K], i ∈ [N] }
+    ρ̂_0          = q_{α}(C_pool),           ρ̂_1 = 1 − q_{1−α}(C_pool)
+    p_corr_k(i)  = clip( (c_iso_k(i) − ρ̂_0) / (1 − ρ̂_0 − ρ̂_1),  0, 1 )
+    R̂*_CA       = (1/N) Σ_i  min( p̄(i), 1 − p̄(i) ),
+                   where  p̄(i) = (1/K) Σ_k p_corr_k(i)
+```
+
+Then under (A1) BT assumption; (A2) **monotone-coupled regime**: every
+`c_iso_k` is a monotone transform of the true posterior `η` up to a
+judge-specific gain; explicit scope note — A2 empirically fails on
+UltraFeedback (see C8: isotonic degenerates into `1 − accuracy`,
+Spearman = −0.986), so the bound below is stated for the monotone
+regime and Year-1 must relax A2 separately for rank-breaking cases;
+(A3) sub-Gaussian score tails; (A4) pairwise correlation between
+judges is bounded by `ρ_max < 1` (so effective sample size after
+pooling is `N · Kᵉᶠᶠ` with `Kᵉᶠᶠ ≥ 1`, not `NK`); we have
+
+```
+    | E[R̂*_CA] − R* | = O( (N · Kᵉᶠᶠ)^{−1/3} ) + O( N^{−1/2} )           [bias]
+    Var( R̂*_CA )     = O( N^{−1} )                                       [variance]
+```
+
+so `| R̂*_CA − R* | = O_P( (N · Kᵉᶠᶠ)^{−1/3} + N^{−1/2} )` by Chebyshev.
+
+**Scope of the bound.** Under (A4) with fully correlated judges
+(worst case `Kᵉᶠᶠ = 1`), the anchor term reduces to `O(N^{−1/3})`,
+dominated by the plug-in term `O(N^{−1/2})`. With uncorrelated judges
+(`Kᵉᶠᶠ = K`) the anchor term reaches its ideal `(NK)^{−1/3}` rate.
+Real preference data lives between these two regimes; measuring
+`Kᵉᶠᶠ` from the data is itself a Year-1 sub-problem.
+
+**Proof sketch (full proof = Year-1 work).**
+1. The anchor-estimation step `ρ̂_0, ρ̂_1` is boundary-quantile
+   estimation of the isotonic-coupled score distribution on a pooled
+   sample of size `N · Kᵉᶠᶠ`. The classical cube-root rate for
+   monotone density boundary estimation is due to Chernoff (1964) for
+   the mode, and is formalised for isotonic quantile estimators by
+   Durot (JSPI 2008) and Balabdaoui & Wellner (Ann. Stat. 2007). This
+   gives the first term `(N · Kᵉᶠᶠ)^{−1/3}`.
+2. Conditional on `ρ̂_0, ρ̂_1`, the clipped affine transform of `c_iso`
+   is Lipschitz in the pooled anchor with constant `O(1/(1−ρ_0−ρ_1))`;
+   the `min(p̄, 1−p̄)` averaging across `K` judges is Lipschitz in `p̄`
+   with constant 1.
+3. The plug-in Bayes error computed on `{p̄(i)}_{i=1..N}` inherits the
+   classical Nguyen (2005) / Niu (2013) `O_P(N^{−1/2})` plug-in rate,
+   giving the second term.
+4. Union bound over the two contributions yields the stated bound.
+
+**Non-tautology check (directly addressing the P14 lesson).**
+`R̂*_CA` contains the affine correction **inside** the non-linear
+`min(·)` operator. The algebra `R̂*_raw + (m_hat − m_iso) = 0.5 − m_iso`
+fails here because `m(p_corr) = E|p_corr − 0.5|` is a non-trivial
+function of the *pre-image* of `p_corr` under the clip + affine map,
+not just of the input margin. Explicit counter-derivation: for any
+`ρ_0 ≠ ρ_1`, the kink of `min(p_corr, 1 − p_corr)` at
+`p_corr = 1/2` maps to `c_iso = (1 + ρ_0 − ρ_1) / 2 ≠ 1/2`, so the
+integration region for the min breaks symmetry around `c_iso = 1/2`.
+This is the algebraic guarantee that Year-1 can bound `E[R̂*_CA] − R*`
+via signed-bias analysis rather than hitting the P14 identity.
+
+**Residual Year-1 open problems** (proposal scope):
+- Relax A2 to allow rank-breaking calibrators (non-monotone
+  judge-specific transforms) — connects to C2 (Platt/Temp/Iso/Beta
+  all *preserve* confound) and the degenerate UF-iso case (C8).
+- Derive matching *lower* bound, i.e. show the `(NK)^{−1/3}` term is
+  tight and not an artefact of isotonic boundary.
+- Extend to Plackett-Luce (K > 2 responses) — follow-up estimator
+  family on tournament data.
+- Signed-bias-asymmetric refinement: the current bound is symmetric
+  in `α` and `1−α`. Year-1 should exploit the signed-bias
+  `b = E[p − η]` observed in C7 to get asymmetric bounds that are
+  tighter on miscalibrated judges.
+
+**Empirical support** (this repo, 2026-04-19):
+- C5 (synthetic BT slope `−0.511` vs theoretical `−0.500`, O_P(N^{-1/2})
+  leg verified).
+- C9 (real HS2 refit-iso slope `−0.750`, empirical — steeper than CLT,
+  which *supports* a joint-bias-variance rate rather than pure plug-in).
+- C15 (pooled-anchor `R̂*_CA` drift 0.087 < 0.09 PASS on HS2 ↔ UF, the
+  first concrete non-tautological estimator that generalises).
+
 ## Claim-evidence map
 
 | # | Claim | Evidence | Metric (95% CI where applicable) |
@@ -222,7 +324,8 @@ observed data; no formal isomorphism is claimed.*
 | C11 | Weak judges (Falcon, OLMo) produce no signal beyond random labels | [Fig. 15](experiments/P11-null-sanity/fig_null_sanity.png) + [stats.json](experiments/P11-null-sanity/stats.json) | 200 gold-permutations: null `R̂*_iso` ≈ class prior 0.49; 4/6 judges real `R̂*_iso` outside null 95% CI, Falcon 0.47 and OLMo 0.46 inside |
 | C12 | Confound invariant to UF gold-filter strictness | [Fig. 16](experiments/P12-uf-consensus-subset/fig_uf_consensus.png) + [stats.json](experiments/P12-uf-consensus-subset/stats.json) | τ ∈ {2,3,4,5}, n 999 → 307: `r(acc, R̂*_iso) ∈ [−0.999, −1.000]`, Fisher-z CI upper bound ≤ −0.988 |
 | C13 | Year-1 baseline-to-beat: naive crowd-consensus fails | [Fig. 17](experiments/P13-consensus-baseline/fig_consensus.png) + [stats.json](experiments/P13-consensus-baseline/stats.json) | HS2 median-of-c = 0.445, UF = 0.299; drift 0.146 = same order as single-judge spread; median cannot remove systematic capacity bias — establishes the aggregator floor |
-| C14 | FCI-Risk partial PASS + constructive counterexample | [Fig. 18](experiments/P15-fci-risk/fig_fci.png) + [stats.json](experiments/P15-fci-risk/stats.json) | UF: cross-judge std 0.128 → 0.073 (ratio 0.57, −43%); drift 0.134 → 0.114 (−14%). HS2: std 0.031 → 0.061 (ratio 1.95) because only OLMo has stretch > 1. Overall FAIL (drift > 0.09) but UF success + HS2 counterexample pinpoint the robustness gap Year-1 must close |
+| C14 | FCI-Risk per-judge: partial PASS + constructive counterexample | [Fig. 18](experiments/P15-fci-risk/fig_fci.png) + [stats.json](experiments/P15-fci-risk/stats.json) | UF: cross-judge std 0.128 → 0.073 (ratio 0.57, −43%); drift 0.134 → 0.114 (−14%). HS2: std 0.031 → 0.061 (ratio 1.95) because only OLMo has stretch > 1. Overall FAIL (drift > 0.09) but UF success + HS2 counterexample pinpoint the robustness gap Year-1 must close |
+| C15 | FCI-Risk pooled-anchor: first real-data PASS on drift | [Fig. 19](experiments/P16-fci-pooled/fig_fci_pooled.png) + [stats.json](experiments/P16-fci-pooled/stats.json) | Pooled anchors: HS2 (ρ_0 = 0.185, ρ_1 = 0.071, stretch 1.35); UF (ρ_0 = 0.000, ρ_1 = 0.010, stretch 1.01). Drift **0.087 < 0.09 PASS**; std ratio 1.10 (HS2) / 1.00 (UF) — no variance inflation. Empirical anchor for Year-1 bound |
 
 ---
 
