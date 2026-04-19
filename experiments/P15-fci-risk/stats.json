@@ -1,0 +1,290 @@
+{
+  "hs2": {
+    "dataset": "HS2",
+    "rows": [
+      {
+        "judge": "falcon-7b-instruct",
+        "n": 999,
+        "acc_vs_gold": 0.5185185185185185,
+        "rstar_iso": 0.4714714714714714,
+        "rstar_fci_minmax": 0.2856856856856857,
+        "rstar_fci_q01_q99": 0.23943943943943932,
+        "minmax_anchors": [
+          0.0,
+          0.2857142857142857
+        ],
+        "minmax_stretch": 1.4,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.42857142857142855,
+          0.45238095238095233
+        ],
+        "q01_q99_stretch": 8.399999999999999,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "granite-3.0-8b-instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.587,
+        "rstar_iso": 0.4,
+        "rstar_fci_minmax": 0.4,
+        "rstar_fci_q01_q99": 0.3275,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.2,
+          0.0
+        ],
+        "q01_q99_stretch": 1.25,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Llama-3-8B-Instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.587,
+        "rstar_iso": 0.387,
+        "rstar_fci_minmax": 0.387,
+        "rstar_fci_q01_q99": 0.3100303030303031,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.23255813953488372,
+          0.0
+        ],
+        "q01_q99_stretch": 1.303030303030303,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Mistral-7B-Instruct-v0.3",
+        "n": 1000,
+        "acc_vs_gold": 0.578,
+        "rstar_iso": 0.414,
+        "rstar_fci_minmax": 0.414,
+        "rstar_fci_q01_q99": 0.35068292682926816,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.18000000000000005,
+          0.0
+        ],
+        "q01_q99_stretch": 1.2195121951219512,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "OLMo-7B-Instruct-hf",
+        "n": 1000,
+        "acc_vs_gold": 0.518,
+        "rstar_iso": 0.46400000000000013,
+        "rstar_fci_minmax": 0.3515000000000001,
+        "rstar_fci_q01_q99": 0.439423342072046,
+        "minmax_anchors": [
+          0.0,
+          0.19999999999999996
+        ],
+        "minmax_stretch": 1.25,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.22727272727272727,
+          0.2377142857142861
+        ],
+        "q01_q99_stretch": 1.8691135061656485,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Qwen2.5-7B-Instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.583,
+        "rstar_iso": 0.41600000000000004,
+        "rstar_fci_minmax": 0.41600000000000004,
+        "rstar_fci_q01_q99": 0.37671428571428567,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.125,
+          0.0
+        ],
+        "q01_q99_stretch": 1.1428571428571428,
+        "q01_q99_fallback": false
+      }
+    ],
+    "iso_mean": 0.4254119119119119,
+    "iso_std": 0.0314922732115481,
+    "fci_mm_mean": 0.3756976142809476,
+    "fci_mm_std": 0.04563875682525076,
+    "fci_q_mean": 0.34063171618089033,
+    "fci_q_std": 0.06125293099740238
+  },
+  "uf": {
+    "dataset": "UF",
+    "rows": [
+      {
+        "judge": "falcon-7b-instruct",
+        "n": 993,
+        "acc_vs_gold": 0.525679758308157,
+        "rstar_iso": 0.459214501510574,
+        "rstar_fci_minmax": 0.2052486719473119,
+        "rstar_fci_q01_q99": 0.2052486719473119,
+        "minmax_anchors": [
+          0.46311475409836067,
+          0.2666666666666667
+        ],
+        "minmax_stretch": 3.700707785642064,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.46311475409836067,
+          0.2666666666666667
+        ],
+        "q01_q99_stretch": 3.700707785642064,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "granite-3.0-8b-instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.783,
+        "rstar_iso": 0.216,
+        "rstar_fci_minmax": 0.216,
+        "rstar_fci_q01_q99": 0.20397915998717542,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.03225806451612903,
+          0.00952380952380949
+        ],
+        "q01_q99_stretch": 1.0436037191407501,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Llama-3-8B-Instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.783,
+        "rstar_iso": 0.212,
+        "rstar_fci_minmax": 0.212,
+        "rstar_fci_q01_q99": 0.1926270627062706,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.03225806451612903,
+          0.03191489361702127
+        ],
+        "q01_q99_stretch": 1.0685735240190686,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Mistral-7B-Instruct-v0.3",
+        "n": 1000,
+        "acc_vs_gold": 0.747,
+        "rstar_iso": 0.252,
+        "rstar_fci_minmax": 0.252,
+        "rstar_fci_q01_q99": 0.252,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.0,
+          0.0
+        ],
+        "q01_q99_stretch": 1.0,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "OLMo-7B-Instruct-hf",
+        "n": 1000,
+        "acc_vs_gold": 0.497,
+        "rstar_iso": 0.473,
+        "rstar_fci_minmax": 0.473,
+        "rstar_fci_q01_q99": 0.3693124999999999,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.3333333333333333,
+          0.18181818181818177
+        ],
+        "q01_q99_stretch": 2.0624999999999996,
+        "q01_q99_fallback": false
+      },
+      {
+        "judge": "Qwen2.5-7B-Instruct",
+        "n": 1000,
+        "acc_vs_gold": 0.86,
+        "rstar_iso": 0.139,
+        "rstar_fci_minmax": 0.139,
+        "rstar_fci_q01_q99": 0.134752688172043,
+        "minmax_anchors": [
+          0.0,
+          0.0
+        ],
+        "minmax_stretch": 1.0,
+        "minmax_fallback": false,
+        "q01_q99_anchors": [
+          0.0,
+          0.010638297872340385
+        ],
+        "q01_q99_stretch": 1.010752688172043,
+        "q01_q99_fallback": false
+      }
+    ],
+    "iso_mean": 0.2918690835850956,
+    "iso_std": 0.1277410053459627,
+    "fci_mm_mean": 0.24954144532455194,
+    "fci_mm_std": 0.1054003634782925,
+    "fci_q_mean": 0.22632001380213343,
+    "fci_q_std": 0.07253644839378906
+  },
+  "drift": {
+    "iso": 0.1335428283268163,
+    "fci_minmax": 0.12615616895639567,
+    "fci_q01_q99": 0.1143117023787569,
+    "p13_naive_consensus_reference": 0.146
+  },
+  "std_ratio_fci_q_over_iso": {
+    "hs2": 1.9450145940859283,
+    "uf": 0.5678399680457941
+  },
+  "go_no_go": {
+    "criterion_a_drift_q_lt_0.09": {
+      "value": 0.1143117023787569,
+      "pass": false
+    },
+    "criterion_b_std_ratio_lt_0.85": {
+      "hs2": 1.9450145940859283,
+      "uf": 0.5678399680457941,
+      "pass": true
+    },
+    "criterion_c_all_in_range_0.02_0.55": {
+      "pass": true
+    },
+    "overall_pass": false
+  },
+  "framing": "FCI-Risk is a *heuristic precursor* to the Year-1 margin-matching theorem. Unlike the P0 V4 formula which collapsed to R\u0302*_iso (P14), FCI-Risk pushes an affine correction inside the non-linear min() and therefore cannot be algebraically reduced to isotonic. Theoretical lineage: Patrini et al. 2017 forward-correction, Liu & Tao 2015 anchor points. Year-1 must derive the M^{-1/3} boundary rate and finite-sample bias bound that this estimator family satisfies under BT; this script only checks empirical feasibility."
+}

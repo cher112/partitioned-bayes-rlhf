@@ -149,6 +149,24 @@ observed data; no formal isomorphism is claimed.*
   [Raykar et al. 2010](https://www.jmlr.org/papers/v11/raykar10a.html)
   lineage). This establishes the **minimum-viable-aggregator baseline
   Year-1 margin-matching must beat** (Fig. 17).
+- **C14** **FCI-Risk: partial proof-of-concept + constructive
+  counterexample.** To replace the tautological P0 V4 `R̂*_CA` formula
+  (P14), we implemented a Forward-Corrected Isotonic estimator inspired
+  by [Patrini et al. 2017](https://openaccess.thecvf.com/content_cvpr_2017/html/Patrini_Making_Deep_Neural_CVPR_2017_paper.html)
+  forward-correction and [Liu & Tao 2015](https://ieeexplore.ieee.org/document/7159100)
+  anchor points. The affine correction is placed *inside* `min(·)`, so
+  the estimator is algebraically non-reducible to `R̂*_iso`. **On UF**,
+  FCI-q01/q99 compresses the cross-judge std by 43% (0.128 → 0.073) and
+  reduces HS2↔UF drift by 14% (0.134 → 0.114). **On HS2**, only OLMo has
+  measurable capacity-truncation (stretch 1.87); FCI rescales OLMo
+  downward while leaving the other 5 judges nearly unchanged, so the
+  cross-judge spread *increases* from 0.031 to 0.061. This HS2 failure
+  is exactly the structural gap Year-1's finite-sample theorem must
+  address — a per-judge-anchor estimator cannot be robust when the
+  truncation is heterogeneous across judges. Overall the experiment is
+  a **partial PASS**: directional evidence the CA route works on some
+  datasets, and a concrete counterexample that justifies needing a
+  theorem rather than a heuristic (Fig. 18).
 
 ## Year-1 / Year-2 Research Plan
 
@@ -204,6 +222,7 @@ observed data; no formal isomorphism is claimed.*
 | C11 | Weak judges (Falcon, OLMo) produce no signal beyond random labels | [Fig. 15](experiments/P11-null-sanity/fig_null_sanity.png) + [stats.json](experiments/P11-null-sanity/stats.json) | 200 gold-permutations: null `R̂*_iso` ≈ class prior 0.49; 4/6 judges real `R̂*_iso` outside null 95% CI, Falcon 0.47 and OLMo 0.46 inside |
 | C12 | Confound invariant to UF gold-filter strictness | [Fig. 16](experiments/P12-uf-consensus-subset/fig_uf_consensus.png) + [stats.json](experiments/P12-uf-consensus-subset/stats.json) | τ ∈ {2,3,4,5}, n 999 → 307: `r(acc, R̂*_iso) ∈ [−0.999, −1.000]`, Fisher-z CI upper bound ≤ −0.988 |
 | C13 | Year-1 baseline-to-beat: naive crowd-consensus fails | [Fig. 17](experiments/P13-consensus-baseline/fig_consensus.png) + [stats.json](experiments/P13-consensus-baseline/stats.json) | HS2 median-of-c = 0.445, UF = 0.299; drift 0.146 = same order as single-judge spread; median cannot remove systematic capacity bias — establishes the aggregator floor |
+| C14 | FCI-Risk partial PASS + constructive counterexample | [Fig. 18](experiments/P15-fci-risk/fig_fci.png) + [stats.json](experiments/P15-fci-risk/stats.json) | UF: cross-judge std 0.128 → 0.073 (ratio 0.57, −43%); drift 0.134 → 0.114 (−14%). HS2: std 0.031 → 0.061 (ratio 1.95) because only OLMo has stretch > 1. Overall FAIL (drift > 0.09) but UF success + HS2 counterexample pinpoint the robustness gap Year-1 must close |
 
 ---
 
