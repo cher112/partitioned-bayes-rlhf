@@ -1,0 +1,7 @@
+judge,n,acc_vs_gold,rstar_raw,rstar_iso,ece_raw,ece_iso
+falcon-7b-instruct,4994,0.5062,0.4707,0.4854,0.0211,0.0026
+granite-3.0-8b-instruct,4994,0.5827,0.2517,0.4131,0.1703,0.0113
+Llama-3-8B-Instruct,4994,0.6021,0.227,0.3936,0.172,0.0195
+Mistral-7B-Instruct-v0.3,4994,0.5785,0.3093,0.4163,0.1231,0.015
+OLMo-7B-Instruct-hf,4994,0.5044,0.3377,0.4839,0.1594,0.0082
+Qwen2.5-7B-Instruct,4994,0.5955,0.2213,0.4021,0.2004,0.0098

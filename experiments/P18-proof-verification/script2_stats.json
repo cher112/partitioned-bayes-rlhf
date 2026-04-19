@@ -1,0 +1,53 @@
+{
+  "L_theoretical": 1.511376105197612,
+  "rho_star": [
+    0.19417566165,
+    0.14417566164999995
+  ],
+  "per_delta": [
+    {
+      "delta_rho": -0.1,
+      "empirical_lipschitz_mean": 0.48705247277585184,
+      "empirical_lipschitz_std": 0.00410491192881401
+    },
+    {
+      "delta_rho": -0.05,
+      "empirical_lipschitz_mean": 0.5451442982512164,
+      "empirical_lipschitz_std": 0.0046441943805011375
+    },
+    {
+      "delta_rho": -0.02,
+      "empirical_lipschitz_mean": 0.5818976512422283,
+      "empirical_lipschitz_std": 0.005054106042992382
+    },
+    {
+      "delta_rho": -0.01,
+      "empirical_lipschitz_mean": 0.5938789147859977,
+      "empirical_lipschitz_std": 0.005198836469229735
+    },
+    {
+      "delta_rho": 0.01,
+      "empirical_lipschitz_mean": 0.6173522972715959,
+      "empirical_lipschitz_std": 0.0055316133205344864
+    },
+    {
+      "delta_rho": 0.02,
+      "empirical_lipschitz_mean": 0.6287303106021802,
+      "empirical_lipschitz_std": 0.005730174395377948
+    },
+    {
+      "delta_rho": 0.05,
+      "empirical_lipschitz_mean": 0.6611757496878503,
+      "empirical_lipschitz_std": 0.006045625722178182
+    },
+    {
+      "delta_rho": 0.1,
+      "empirical_lipschitz_mean": 0.7102139955624541,
+      "empirical_lipschitz_std": 0.006424988694161426
+    }
+  ],
+  "max_empirical_lipschitz": 0.7102139955624541,
+  "ratio_to_theory": 0.46991215033771744,
+  "pass_criterion": "max empirical L / L_theory <= 1.5",
+  "pass": true
+}
