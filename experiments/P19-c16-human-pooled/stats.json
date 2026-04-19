@@ -1,0 +1,34 @@
+{
+  "n_pairs": 5940,
+  "n_annotators_per_pair": 3,
+  "alpha": 0.01,
+  "per_annotator_iso": [
+    {
+      "annotator_idx": 0,
+      "acc": 0.8483164983164984,
+      "rstar_iso": 0.15168350168350167
+    },
+    {
+      "annotator_idx": 1,
+      "acc": 0.8501683501683501,
+      "rstar_iso": 0.14983164983164984
+    },
+    {
+      "annotator_idx": 2,
+      "acc": 0.8486531986531987,
+      "rstar_iso": 0.15134680134680134
+    }
+  ],
+  "mean_per_annotator_iso": 0.15095398428731763,
+  "rho_0": 0.0,
+  "rho_1": 0.0,
+  "stretch": 1.0,
+  "rstar_ca_human_K3": 0.16406137793736045,
+  "llm_reference_P16": {
+    "hs2_llm_rstar_ca": 0.407,
+    "uf_llm_rstar_ca": 0.321
+  },
+  "gap_vs_hs2_llm": 0.24293862206263953,
+  "gap_vs_uf_llm": 0.15693862206263956,
+  "interpretation": "C16 applies the pooled-anchor FCI estimator (P16) to the human-annotator preference data without any LLM judge. With K=3 annotators per pair on 9125 HS2-Preference pairs, the estimator produces a single R\u0302*_CA that can be compared to the LLM-derived values (HS2 0.407, UF 0.321). A small gap suggests the method generalises beyond LLM-soft-label input; a large gap suggests low-K regime requires stronger theory (motivates Year-1 low-K extension)."
+}
